@@ -1,29 +1,32 @@
-document.addEventListener("DOMContentLoaded", () => {
+        const API_URL = "https://resume-analyser-geb4.onrender.com";
+        const resumeFile = document.getElementById('resumeFile');
+        const resumeLabel = document.getElementById('resumeLabel');
+        const jdFile = document.getElementById('jdFile');
+        const jdLabel = document.getElementById('jdLabel');
+        const compareBtn = document.getElementById('compareBtn');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContent = document.getElementById('resultsContent');
+        const emptyState = document.getElementById('emptyState');
 
-const API_URL = "https://resume-analyser-geb4.onrender.com";
-
-const resumeFile = document.getElementById('resumeFile');
-const resumeLabel = document.getElementById('resumeLabel');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const errorMessage = document.getElementById('errorMessage');
-const resultsSection = document.getElementById('resultsSection');
-const resultsContent = document.getElementById('resultsContent');
-const emptyState = document.getElementById('emptyState');
-
-if (!resumeFile || !analyzeBtn) {
-    console.error("DOM not loaded properly");
-    return;
-}
-
-// File input handler
+        // File input handlers
         resumeFile.addEventListener('change', function() {
             if (this.files.length > 0) {
-                const fileName = this.files[0].name;
-                resumeLabel.textContent = `✓ ${fileName}`;
+                resumeLabel.textContent = `✓ ${this.files[0].name}`;
                 resumeLabel.classList.add('has-file');
             } else {
-                resumeLabel.textContent = '📄 Choose PDF File';
+                resumeLabel.textContent = '📄 Choose Resume PDF';
                 resumeLabel.classList.remove('has-file');
+            }
+        });
+
+        jdFile.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                jdLabel.textContent = `✓ ${this.files[0].name}`;
+                jdLabel.classList.add('has-file');
+            } else {
+                jdLabel.textContent = '📄 Choose JD PDF';
+                jdLabel.classList.remove('has-file');
             }
         });
 
@@ -36,26 +39,32 @@ if (!resumeFile || !analyzeBtn) {
             }, 5000);
         }
 
-        // Analyze button handler
-        analyzeBtn.addEventListener('click', async function() {
+        // Compare button handler
+        compareBtn.addEventListener('click', async function() {
             // Validation
             if (!resumeFile.files.length) {
                 showError('Please upload a resume PDF file');
                 return;
             }
 
+            if (!jdFile.files.length) {
+                showError('Please upload a job description PDF file');
+                return;
+            }
+
             // Prepare FormData
             const formData = new FormData();
             formData.append('file', resumeFile.files[0]);
+            formData.append('jd', jdFile.files[0]);
 
             // Show loading state
-            analyzeBtn.classList.add('loading');
-            analyzeBtn.disabled = true;
+            compareBtn.classList.add('loading');
+            compareBtn.disabled = true;
             emptyState.style.display = 'none';
             resultsSection.classList.remove('show');
 
             try {
-               const response = await fetch(`${API_URL}/analyze/`, {
+                const response = await fetch(`${API_URL}/analyze/`, {
                     method: 'POST',
                     body: formData
                 });
@@ -68,50 +77,69 @@ if (!resumeFile || !analyzeBtn) {
                 displayResults(data);
 
             } catch (error) {
-                showError('Failed to analyze resume. Please check your connection and try again.');
+                showError('Failed to compare files. Please check your connection and try again.');
                 console.error('Error:', error);
                 emptyState.style.display = 'block';
             } finally {
-                analyzeBtn.classList.remove('loading');
-                analyzeBtn.disabled = false;
+                compareBtn.classList.remove('loading');
+                compareBtn.disabled = false;
             }
         });
 
         // Display results function
         function displayResults(data) {
-            const filename = data.filename || 'Unknown';
-            const score = data.score || 0;
-            const skillsFound = data.skills_found || [];
-            const warnings = data.warnings || [];
+            const matchScore = data.match_score || '0%';
+            const skillsInResume = data.skills_in_resume || [];
+            const skillsRequired = data.skills_required || [];
+            const missingSkills = data.missing_skills || [];
 
             let html = `
-                <div class="result-header">
-                    <div class="filename-display">
-                        <strong>File:</strong> ${filename}
-                    </div>
-                    <div class="score-badge">
-                        ${score}<span>/100</span>
-                    </div>
+                <div class="match-score-card">
+                    <div class="match-label">Match Score</div>
+                    <div class="match-value">${matchScore}</div>
+                    <div class="match-subtitle">Resume compatibility with job requirements</div>
                 </div>
 
-                <div class="info-section">
-                    <h3>
-                        <span>✨</span> Skills Found
-                        <span style="background: #667eea; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; margin-left: 8px;">${skillsFound.length}</span>
-                    </h3>
-                    <div class="skills-container">
-                        ${skillsFound.length > 0 
-                            ? skillsFound.map(skill => `<div class="skill-tag">${skill}</div>`).join('') 
-                            : '<p style="color: #a0aec0;">No skills detected</p>'}
+                <div class="skills-grid">
+                    <div class="skill-card">
+                        <h3>
+                            <span>✓</span> 
+                            Skills in Resume
+                            <span class="skill-count">${skillsInResume.length}</span>
+                        </h3>
+                        <div class="skills-container">
+                            ${skillsInResume.length > 0 
+                                ? skillsInResume.map(skill => `<div class="skill-tag">${skill}</div>`).join('') 
+                                : '<p style="color: #a0aec0;">No skills detected</p>'}
+                        </div>
+                    </div>
+
+                    <div class="skill-card required">
+                        <h3>
+                            <span>📋</span> 
+                            Required Skills
+                            <span class="skill-count">${skillsRequired.length}</span>
+                        </h3>
+                        <div class="skills-container">
+                            ${skillsRequired.length > 0 
+                                ? skillsRequired.map(skill => `<div class="skill-tag">${skill}</div>`).join('') 
+                                : '<p style="color: #a0aec0;">No requirements found</p>'}
+                        </div>
+                    </div>
+
+                    <div class="skill-card missing">
+                        <h3>
+                            <span>⚠️</span> 
+                            Missing Skills
+                            <span class="skill-count">${missingSkills.length}</span>
+                        </h3>
+                        <div class="skills-container">
+                            ${missingSkills.length > 0 
+                                ? missingSkills.map(skill => `<div class="skill-tag">${skill}</div>`).join('') 
+                                : '<p style="color: #48bb78; font-weight: 600;">🎉 You have all required skills!</p>'}
+                        </div>
                     </div>
                 </div>
-
-                ${warnings.length > 0 ? `
-                    <div class="warnings-section">
-                        <h3>⚠️ Warnings</h3>
-                        ${warnings.map(warning => `<div class="warning-item">• ${warning}</div>`).join('')}
-                    </div>
-                ` : ''}
             `;
 
             resultsContent.innerHTML = html;
@@ -122,5 +150,3 @@ if (!resumeFile || !analyzeBtn) {
                 resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 100);
         }
-});
-        
