@@ -1,14 +1,21 @@
-// Elements
-        const API_URL = "https://resume-analyser-geb4.onrender.com";
-        const resumeFile = document.getElementById('resumeFile');
-        const resumeLabel = document.getElementById('resumeLabel');
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const errorMessage = document.getElementById('errorMessage');
-        const resultsSection = document.getElementById('resultsSection');
-        const resultsContent = document.getElementById('resultsContent');
-        const emptyState = document.getElementById('emptyState');
+document.addEventListener("DOMContentLoaded", () => {
 
-        // File input handler
+const API_URL = "https://resume-analyser-geb4.onrender.com";
+
+const resumeFile = document.getElementById('resumeFile');
+const resumeLabel = document.getElementById('resumeLabel');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const errorMessage = document.getElementById('errorMessage');
+const resultsSection = document.getElementById('resultsSection');
+const resultsContent = document.getElementById('resultsContent');
+const emptyState = document.getElementById('emptyState');
+
+if (!resumeFile || !analyzeBtn) {
+    console.error("DOM not loaded properly");
+    return;
+}
+
+// File input handler
         resumeFile.addEventListener('change', function() {
             if (this.files.length > 0) {
                 const fileName = this.files[0].name;
@@ -115,3 +122,5 @@
                 resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }, 100);
         }
+});
+        
