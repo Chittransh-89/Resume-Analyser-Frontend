@@ -1,4 +1,5 @@
 // Elements
+        const API_URL = "https://resume-analyser-geb4.onrender.com";
         const resumeFile = document.getElementById('resumeFile');
         const resumeLabel = document.getElementById('resumeLabel');
         const jdFile = document.getElementById('jdFile');
