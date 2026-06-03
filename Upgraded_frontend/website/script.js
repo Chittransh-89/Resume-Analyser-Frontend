@@ -89,7 +89,6 @@ robotWrap.addEventListener('click', () => {
   holoOpen = true;
   robotCta.style.opacity = '0';
 
-  /* Eye glow boost */
   document.querySelectorAll('.eye').forEach(e => {
     e.style.animation = 'none';
     e.style.filter = 'drop-shadow(0 0 10px #22d3ee)';
@@ -100,11 +99,9 @@ robotWrap.addEventListener('click', () => {
     }, 800);
   });
 
-  /* Beam */
   robotBeam.style.width = '200px';
   robotAura.style.opacity = '1';
 
-  /* Open panel */
   setTimeout(() => {
     holoPanel.classList.add('open');
     typeText(ABOUT_TEXT, typedText, 22, () => {
@@ -142,7 +139,6 @@ function runDemo() {
       if (idx < 2) {
         setTimeout(() => { st.textContent = '✔'; }, 500);
       } else {
-        /* Scanning animation for step 3 */
         let dots = 0;
         const iv = setInterval(() => { st.textContent = '.'.repeat(dots % 4); dots++; }, 350);
         setTimeout(() => {
@@ -168,6 +164,144 @@ function showDemoResult() {
     btn.disabled = false;
     btn.innerHTML = btn.innerHTML.replace('Running...', 'Show Demo');
   }, 3000);
+}
+
+/* ══ CLASSIFICATION SECTION — File Upload ══ */
+const classifyInput = document.getElementById('classifyFile');
+const classifyNameDisplay = document.getElementById('classifyNameDisplay');
+
+if (document.getElementById('dropClassify')) {
+  document.getElementById('dropClassify').addEventListener('click', () => classifyInput.click());
+}
+
+if (classifyInput) {
+  classifyInput.addEventListener('change', () => {
+    if (classifyInput.files[0]) {
+      classifyNameDisplay.textContent = classifyInput.files[0].name;
+      document.getElementById('dropClassify').classList.add('has-file');
+    }
+  });
+}
+
+function showClassifyState(state) {
+  const idle = document.getElementById('classifyIdle');
+  const loading = document.getElementById('classifyLoading');
+  const result = document.getElementById('classifyResult');
+  if (idle) idle.classList.add('hidden');
+  if (loading) loading.classList.add('hidden');
+  if (result) result.classList.add('hidden');
+  if (state === 'idle' && idle) idle.classList.remove('hidden');
+  if (state === 'loading' && loading) loading.classList.remove('hidden');
+  if (state === 'result' && result) result.classList.remove('hidden');
+}
+
+async function classifyDocument() {
+  if (!classifyInput || !classifyInput.files[0]) {
+    alert('Please upload a PDF file first.');
+    return;
+  }
+
+  showClassifyState('loading');
+
+  const formData = new FormData();
+  formData.append('file', classifyInput.files[0]);
+
+  try {
+    const res = await fetch('http://127.0.0.1:8000/classify/', {
+      method: 'POST',
+      body: formData
+    });
+
+    if (!res.ok) throw new Error(`Server: ${res.status}`);
+
+    const data = await res.json();
+    console.log('CLASSIFY DATA:', data);
+
+    showClassifyState('result');
+    renderClassification(data);
+
+  } catch (err) {
+    console.error(err);
+    alert('Classification failed. Make sure backend is running.');
+    showClassifyState('idle');
+  }
+}
+
+function renderClassification(data) {
+  const v = data.validation || data;
+
+  const docType = v.type || 'UNKNOWN';
+  const isResume = v.resume !== false;
+  const confidence = v.confidence || 0;
+  const jobRole = v.job_role || 'UNKNOWN';
+
+  // Type icon & badge
+  const typeIcon = document.getElementById('crcTypeIcon');
+  const typeBadge = document.getElementById('crcTypeBadge');
+
+  if (typeIcon && typeBadge) {
+    if (docType.includes('RESUME') || isResume) {
+      typeIcon.textContent = '📄';
+      typeBadge.textContent = 'RESUME';
+      typeBadge.classList.remove('type-jd');
+    } else {
+      typeIcon.textContent = '📋';
+      typeBadge.textContent = 'JOB DESCRIPTION';
+      typeBadge.classList.add('type-jd');
+    }
+  }
+
+  // Role
+  const crcRole = document.getElementById('crcRole');
+  if (crcRole) crcRole.textContent = jobRole.replace(/_/g, ' ');
+
+  // Confidence bar + number
+  const confPercent = Math.round(confidence * 100);
+  const confBar = document.getElementById('crcConfBar');
+  const confVal = document.getElementById('crcConfVal');
+
+  if (confBar) {
+    setTimeout(() => {
+      confBar.style.width = confPercent + '%';
+    }, 200);
+  }
+
+  if (confVal) {
+    let current = 0;
+    const confInterval = setInterval(() => {
+      current += 1;
+      confVal.textContent = current + '%';
+      if (current >= confPercent) clearInterval(confInterval);
+    }, 15);
+  }
+
+  // Resume status
+  const statusEl = document.getElementById('crcResumeStatus');
+  const statusIcon = document.getElementById('crcResumeIcon');
+  const statusText = document.getElementById('crcResumeText');
+
+  if (statusEl && statusIcon && statusText) {
+    statusEl.classList.remove('is-resume', 'not-resume');
+    statusText.classList.remove('text-yes', 'text-no');
+
+    if (isResume) {
+      statusEl.classList.add('is-resume');
+      statusIcon.textContent = '✅';
+      statusText.textContent = 'Yes — This is a Resume';
+      statusText.classList.add('text-yes');
+    } else {
+      statusEl.classList.add('not-resume');
+      statusIcon.textContent = '📋';
+      statusText.textContent = 'No — This is a Job Description';
+      statusText.classList.add('text-no');
+    }
+  }
+
+  // JSON output
+  const jsonEl = document.getElementById('crcJson');
+  if (jsonEl) {
+    jsonEl.textContent = JSON.stringify({ validation: v }, null, 2);
+  }
 }
 
 /* ══ FILE UPLOAD (Implementation) ══ */
@@ -229,7 +363,7 @@ function showState(state) {
   if (state === 'result') document.getElementById('resultState').classList.remove('hidden');
 }
 
-/* ══ RENDER RESULT ══ */
+/* ══ RENDER RESULT (SINGLE — NO DUPLICATE) ══ */
 const KEYWORDS = [
   "python","scikit-learn","machine learning","logistic regression","linear regression",
   "kaggle","pandas","numpy","ai","data","classification","predictive","models",
@@ -246,11 +380,12 @@ function highlightKw(text) {
 }
 
 function renderResult(data) {
-  /* Role */
-  document.getElementById('roleDisplay').textContent =
-    data.role_match?.resume_role || data.validation?.resume?.job_role || 'UNKNOWN';
 
-  /* Scores */
+  /* ═══ ROLE DISPLAY ═══ */
+  document.getElementById('roleDisplay').textContent =
+    data.role_match?.resume_role || data.validation?.job_role || data.validation?.resume?.job_role || 'UNKNOWN';
+
+  /* ═══ SCORES ═══ */
   const final = Math.round(data.scores?.final || 0);
   const semantic = Math.round(data.scores?.semantic || 0);
   const skill = Math.round(data.scores?.skill || 0);
@@ -264,7 +399,7 @@ function renderResult(data) {
     animateCounter('vSkill', 0, skill, 1600);
   }, 300);
 
-  /* Skills */
+  /* ═══ SKILLS ═══ */
   const missing = data.skills?.missing || [];
   const matched = data.skills?.matched || [];
   document.getElementById('rMissing').innerHTML = missing.map(s =>
@@ -275,7 +410,7 @@ function renderResult(data) {
       ? `<span class="tag tag-matched" style="opacity:.6">+${matched.length - 14}</span>`
       : '');
 
-  /* ══ BULLETS — Original + Improved dono dikhao ══ */
+  /* ═══ BULLETS — Original + Improved ═══ */
   const bullets = data.improved_bullets || [];
   const list = document.getElementById('rBullets');
   list.innerHTML = '';
@@ -285,12 +420,10 @@ function renderResult(data) {
     card.className = 'rbullet-card';
     card.style.animationDelay = (i * 0.08) + 's';
 
-    /* Check if bullet is object or string */
     const isObject = typeof b === 'object' && b !== null;
     const originalText = isObject ? (b.original || '') : '';
     const improvedText = isObject ? (b.improved || '') : b;
 
-    /* Build card HTML with original + improved */
     card.innerHTML = `
       ${originalText
         ? `<div class="bullet-original">
@@ -311,13 +444,13 @@ function renderResult(data) {
         <p class="bullet-text-imp">${highlightKw(improvedText)}</p>
       </div>
     `;
-
     list.appendChild(card);
   });
 
-  /* Reasoning */
+  /* ═══ REASONING ═══ */
   document.getElementById('rReasoning').textContent = data.reasoning || '';
 }
+
 /* ══ RING + COUNTER ANIMATORS ══ */
 function animateRing(id, value) {
   const el = document.getElementById(id);
@@ -347,7 +480,6 @@ function showToast(msg = 'Copied!') {
   setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-/* Page load pe toast hide karo */
 window.addEventListener('load', () => {
   const t = document.getElementById('toast');
   t.style.opacity = '0';
