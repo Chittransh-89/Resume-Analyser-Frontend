@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Resume Analyzer</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+  <!-- ═══ BACKGROUND ═══ -->
+  <canvas id="starfield"></canvas>
+  <div id="particles"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ═══ NAVBAR ═══ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <span class="logo-icon">◈</span>
+        <span>AI Resume <span class="c">Analyzer</span></span>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#about" class="nav-link">About</a></li>
+        <li><a href="#demo" class="nav-link">Demo</a></li>
+        <li><a href="#implementation" class="nav-link">Implementation</a></li>
+        <li><a href="#credits" class="nav-link">Credits</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ═══ SECTION 1 — HOME (JABARDASTT) ═══ -->
+<section id="home" class="section hero-section">
+
+  <!-- Grid background -->
+  <div class="hero-grid-bg"></div>
+
+  <!-- Radial spotlight -->
+  <div class="hero-spotlight"></div>
+
+  <div class="hero-content">
+
+    <!-- Top badge row -->
+    <div class="hero-badge-row">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        NEURAL INTERFACE ACTIVE
+      </div>
+      <div class="hero-badge badge-ver">
+        <span class="ver-icon">◈</span>
+        v3.0 STABLE
+      </div>
+    </div>
+
+    <!-- Main Title -->
+    <h1 class="hero-title">
+      <span class="title-line">
+        <span class="title-word" style="animation-delay:0.1s">AI</span>
+        <span class="title-word" style="animation-delay:0.2s">Resume</span>
+      </span>
+      <span class="title-line gradient-text">
+        <span class="title-word" style="animation-delay:0.35s">Analyzer</span>
+      </span>
+    </h1>
+
+    <!-- Typing subtitle -->
+    <div class="hero-sub-wrap">
+      <span class="hero-sub-cursor"></span>
+      <p class="hero-sub">Precision-driven resume intelligence powered by AI & advanced NLP</p>
+    </div>
+
+    <!-- Feature pills -->
+    <div class="hero-features">
+      <div class="hero-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2.5">
+          <path d="M9 12l2 2 4-4"/>
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        ATS Scoring
+      </div>
+      <div class="hero-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.5">
+          <path d="M9 12l2 2 4-4"/>
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        Skill Gap Analysis
+      </div>
+      <div class="hero-pill">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5">
+          <path d="M9 12l2 2 4-4"/>
+          <circle cx="12" cy="12" r="10"/>
+        </svg>
+        AI Bullet Rewriting
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-icon">🦙</span>
+        <div class="stat-info">
+          <span class="stat-val">LLaMA 3</span>
+          <span class="stat-lbl">LLM Engine</span>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-icon">🎯</span>
+        <div class="stat-info">
+          <span class="stat-val">E5-Large</span>
+          <span class="stat-lbl">Embeddings</span>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-icon">⚡</span>
+        <div class="stat-info">
+          <span class="stat-val">FastAPI</span>
+          <span class="stat-lbl">Backend</span>
+        </div>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat">
+        <span class="stat-icon">📊</span>
+        <div class="stat-info">
+          <span class="stat-val">ATS</span>
+          <span class="stat-lbl">Optimized</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="hero-cta-row">
+      <a href="#implementation" class="btn-primary">
+        <span class="btn-glow"></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Start Analysis
+      </a>
+      <a href="#demo" class="btn-secondary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="5 3 19 12 5 21 5 3"/>
+        </svg>
+        Watch Demo
+      </a>
+    </div>
+
+    <!-- Trusted / Tech line -->
+    <div class="hero-trust-line">
+      <span class="trust-label">POWERED BY</span>
+      <div class="trust-logos">
+        <span class="trust-item">
+          <span class="ti-dot cyan"></span> Groq API
+        </span>
+        <span class="trust-item">
+          <span class="ti-dot purple"></span> HuggingFace
+        </span>
+        <span class="trust-item">
+          <span class="ti-dot emerald"></span> SentenceTransformers
+        </span>
+        <span class="trust-item">
+          <span class="ti-dot amber"></span> pdfplumber
+        </span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ RIGHT VISUAL ═══ -->
+  <div class="hero-visual">
+
+    <!-- Hex rings -->
+    <div class="hex-ring hex-1"></div>
+    <div class="hex-ring hex-2"></div>
+    <div class="hex-ring hex-3"></div>
+
+    <!-- Center Orb -->
+    <div class="center-orb">
+      <div class="orb-inner">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5">
+          <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+          <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Floating data cards around orb -->
+    <div class="hero-float-card hfc-1">
+      <span class="hfc-icon">📄</span>
+      <div>
+        <span class="hfc-title">Resume Parsed</span>
+        <span class="hfc-val">247 tokens</span>
+      </div>
+    </div>
+
+    <div class="hero-float-card hfc-2">
+      <span class="hfc-icon">🎯</span>
+      <div>
+        <span class="hfc-title">ATS Score</span>
+        <span class="hfc-val hfc-cyan">87%</span>
+      </div>
+    </div>
+
+    <div class="hero-float-card hfc-3">
+      <span class="hfc-icon">🧠</span>
+      <div>
+        <span class="hfc-title">AI Model</span>
+        <span class="hfc-val hfc-purple">LLaMA 3</span>
+      </div>
+    </div>
+
+    <!-- Orbiting particles -->
+    <div class="hero-orbit-ring">
+      <span class="horb-dot hd1"></span>
+      <span class="horb-dot hd2"></span>
+      <span class="horb-dot hd3"></span>
+    </div>
+
+    <!-- Connection lines -->
+    <svg class="hero-connections" viewBox="0 0 400 400">
+      <line x1="200" y1="200" x2="80" y2="120" stroke="rgba(34,211,238,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="200" y1="200" x2="320" y2="100" stroke="rgba(168,85,247,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="200" y1="200" x2="300" y2="320" stroke="rgba(52,211,153,0.1)" stroke-width="1" stroke-dasharray="4,4"/>
+    </svg>
+
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="hero-scroll-indicator">
+    <div class="scroll-mouse">
+      <div class="scroll-wheel"></div>
+    </div>
+    <span class="scroll-text">SCROLL TO EXPLORE</span>
+  </div>
+
+</section>
+    <div class="section-divider"></div>
+  <!-- ═══ SECTION 2 — ABOUT ═══ -->
+  <section id="about" class="section">
+    <div class="section-label">SECTION 02</div>
+    <h2 class="section-title">About the System</h2>
+
+    <div class="about-layout">
+      <!-- Robot -->
+      <div class="robot-area" id="robotArea">
+        <div class="robot-platform"></div>
+        <div class="robot-wrap" id="robotWrap">
+          <div class="robot-glow-aura" id="robotAura"></div>
+          <!-- Beam -->
+          <div class="robot-beam" id="robotBeam"></div>
+          <svg class="robot-svg" id="robotSvg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- Antenna -->
+            <line x1="100" y1="10" x2="100" y2="28" stroke="#22d3ee" stroke-width="2"/>
+            <circle cx="100" cy="7" r="4" fill="#22d3ee" class="antenna-orb"/>
+            <!-- Head -->
+            <rect x="55" y="28" width="90" height="72" rx="18" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+            <!-- Visor -->
+            <rect x="62" y="38" width="76" height="28" rx="8" fill="#0a1628" stroke="#1e40af" stroke-width="1"/>
+            <!-- Eyes -->
+            <ellipse cx="82" cy="52" rx="10" ry="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
+            <ellipse cx="118" cy="52" rx="10" ry="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
+            <ellipse cx="82" cy="52" rx="5" ry="5" fill="#22d3ee" class="eye" id="eyeL"/>
+            <ellipse cx="118" cy="52" rx="5" ry="5" fill="#22d3ee" class="eye" id="eyeR"/>
+            <ellipse cx="82" cy="52" rx="2" ry="2" fill="white" opacity="0.9"/>
+            <ellipse cx="118" cy="52" rx="2" ry="2" fill="white" opacity="0.9"/>
+            <!-- Mouth -->
+            <rect x="82" y="78" width="36" height="5" rx="2.5" fill="#22d3ee" opacity="0.6"/>
+            <!-- Neck -->
+            <rect x="88" y="100" width="24" height="18" rx="4" fill="#0d1117" stroke="#22d3ee" stroke-width="1"/>
+            <!-- Body -->
+            <path d="M42 118 Q42 112 48 112 L152 112 Q158 112 158 118 L158 218 Q158 226 150 226 L50 226 Q42 226 42 218 Z" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+            <!-- Chest panel -->
+            <rect x="62" y="128" width="76" height="50" rx="8" fill="#0a1628" stroke="#1e3a5f" stroke-width="1"/>
+            <!-- Core reactor -->
+            <circle cx="100" cy="153" r="18" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>
+            <circle cx="100" cy="153" r="12" fill="rgba(34,211,238,0.1)" stroke="#22d3ee" stroke-width="1"/>
+            <circle cx="100" cy="153" r="6" fill="#22d3ee" class="reactor-core"/>
+            <!-- Side lights -->
+            <rect x="65" y="132" width="6" height="6" rx="1" fill="#22d3ee" opacity="0.8"/>
+            <rect x="129" y="132" width="6" height="6" rx="1" fill="#a855f7" opacity="0.8"/>
+            <!-- Shoulder joints -->
+            <circle cx="42" cy="128" r="14" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+            <circle cx="158" cy="128" r="14" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+            <!-- Left arm -->
+            <path d="M28 128 L18 128 Q10 128 10 136 L10 188 Q10 196 18 196 L32 196" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+            <rect x="8" y="196" width="28" height="20" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <!-- Right arm -->
+            <path d="M172 128 L182 128 Q190 128 190 136 L190 188 Q190 196 182 196 L168 196" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+            <rect x="164" y="196" width="28" height="20" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <!-- Legs -->
+            <rect x="66" y="226" width="28" height="50" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <rect x="106" y="226" width="28" height="50" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <!-- Feet -->
+            <rect x="60" y="272" width="40" height="16" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <rect x="100" y="272" width="40" height="16" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+          </svg>
+          <div class="robot-cta" id="robotCta">Click the Cyborg</div>
+        </div>
+      </div>
+
+      <!-- Hologram Panel -->
+      <div class="holo-panel-wrap" id="holoPanelWrap">
+        <div class="holo-panel" id="holoPanel">
+          <div class="holo-scanlines"></div>
+          <div class="holo-header">
+            <span class="holo-dot blink"></span>
+            SYSTEM BRIEFING — CLASSIFIED
+          </div>
+          <div class="holo-body">
+            <p class="typed-text" id="typedText"></p>
+            <div class="tech-stack" id="techStack" style="opacity:0">
+              <div class="stack-group">
+                <div class="stack-title">Backend</div>
+                <div class="stack-tags">
+                  <span class="stag">Python</span>
+                  <span class="stag">FastAPI</span>
+                  <span class="stag">Groq API</span>
+                  <span class="stag">LLaMA 3</span>
+                </div>
+              </div>
+              <div class="stack-group">
+                <div class="stack-title">AI / ML</div>
+                <div class="stack-tags">
+                  <span class="stag purple">SentenceTransformers</span>
+                  <span class="stag purple">E5-Large</span>
+                  <span class="stag purple">Cosine Similarity</span>
+                  <span class="stag purple">NLP</span>
+                </div>
+              </div>
+              <div class="stack-group">
+                <div class="stack-title">Processing</div>
+                <div class="stack-tags">
+                  <span class="stag emerald">pdfplumber</span>
+                  <span class="stag emerald">Regex</span>
+                  <span class="stag emerald">AsyncIO</span>
+                  <span class="stag emerald">HTTPX</span>
+                </div>
+              </div>
+              <div class="stack-group">
+                <div class="stack-title">Frontend</div>
+                <div class="stack-tags">
+                  <span class="stag amber">HTML5</span>
+                  <span class="stag amber">CSS3</span>
+                  <span class="stag amber">Canvas API</span>
+                  <span class="stag amber">Vanilla JS</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+  <!-- ═══ SECTION 3 — DEMO ═══ -->
+  <section id="demo" class="section">
+    <div class="section-label">SECTION 03</div>
+    <h2 class="section-title">Interactive Demo</h2>
+    <p class="section-sub">Watch the AI analyze a sample resume in real-time</p>
+
+    <div class="demo-center">
+      <button class="btn-primary" id="demoBtn" onclick="runDemo()">
+        <span class="btn-glow"></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Show Demo
+      </button>
+
+      <div class="demo-arena" id="demoArena">
+        <!-- Mini Robot -->
+        <div class="mini-robot-wrap" id="miniRobotWrap">
+          <svg class="mini-robot" viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="12" r="4" fill="#22d3ee"/>
+            <line x1="50" y1="16" x2="50" y2="26" stroke="#22d3ee" stroke-width="1.5"/>
+            <rect x="28" y="26" width="44" height="36" rx="10" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <ellipse cx="40" cy="44" rx="6" ry="5" fill="#0f172a" stroke="#22d3ee" stroke-width="0.8"/>
+            <ellipse cx="60" cy="44" rx="6" ry="5" fill="#0f172a" stroke="#22d3ee" stroke-width="0.8"/>
+            <ellipse cx="40" cy="44" rx="3" ry="3" fill="#22d3ee" class="eye"/>
+            <ellipse cx="60" cy="44" rx="3" ry="3" fill="#22d3ee" class="eye"/>
+            <rect x="38" y="54" width="24" height="3" rx="1.5" fill="#22d3ee" opacity="0.6"/>
+            <rect x="44" y="62" width="12" height="10" rx="2" fill="#0d1117" stroke="#22d3ee" stroke-width="0.8"/>
+            <rect x="22" y="72" width="56" height="36" rx="8" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+            <circle cx="50" cy="90" r="8" fill="rgba(34,211,238,0.15)" stroke="#22d3ee" stroke-width="0.8"/>
+            <circle cx="50" cy="90" r="4" fill="#22d3ee" class="reactor-core"/>
+            <rect x="32" y="108" width="14" height="18" rx="4" fill="#0d1117" stroke="#22d3ee" stroke-width="0.8"/>
+            <rect x="54" y="108" width="14" height="18" rx="4" fill="#0d1117" stroke="#22d3ee" stroke-width="0.8"/>
+          </svg>
+        </div>
+
+        <!-- Demo Steps -->
+        <div class="demo-flow" id="demoFlow">
+          <div class="demo-step" id="ds1"><span class="ds-icon">📄</span> Uploading Resume<span class="ds-status" id="st1"></span></div>
+          <div class="demo-step" id="ds2"><span class="ds-icon">📋</span> Uploading Job Description<span class="ds-status" id="st2"></span></div>
+          <div class="demo-step" id="ds3"><span class="ds-icon">🔍</span> Analyzing with AI<span class="ds-status" id="st3"></span></div>
+        </div>
+
+        <!-- Demo Result Hologram -->
+        <div class="demo-result-holo" id="demoResultHolo">
+          <div class="holo-scanlines"></div>
+          <div class="holo-header"><span class="holo-dot blink"></span> DEMO RESULT OUTPUT</div>
+          <div class="demo-scores">
+            <div class="dscore-box">
+              <div class="dscore-ring" id="demoRing">
+                <svg viewBox="0 0 90 90">
+                  <circle class="score-track" cx="45" cy="45" r="38"/>
+                  <circle class="score-progress cyan" id="demoProgress" cx="45" cy="45" r="38"/>
+                </svg>
+                <div class="dscore-val" id="demoScoreVal">0</div>
+              </div>
+              <div class="dscore-lbl">ATS Score</div>
+            </div>
+            <div class="demo-skill-area">
+              <div class="dskill-title">✅ Matched Skills</div>
+              <div class="tag-row">
+                <span class="tag tag-matched">Python</span>
+                <span class="tag tag-matched">FastAPI</span>
+                <span class="tag tag-matched">Machine Learning</span>
+                <span class="tag tag-matched">Docker</span>
+                <span class="tag tag-matched">PyTorch</span>
+              </div>
+              <div class="dskill-title" style="margin-top:.75rem">❌ Missing Skills</div>
+              <div class="tag-row">
+                <span class="tag tag-missing">Kubernetes</span>
+                <span class="tag tag-missing">Spark</span>
+                <span class="tag tag-missing">Transformers</span>
+              </div>
+            </div>
+          </div>
+          <div class="demo-bullet-title">Improved Bullet</div>
+          <div class="demo-bullet">
+            <span class="b-label label-good">✦</span>
+            Designed and deployed a <span class="kw">machine learning</span> pipeline using <span class="kw">Python</span> and <span class="kw">FastAPI</span>, reducing inference latency by 35%.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+  <!-- ═══ SECTION 4 — IMPLEMENTATION ═══ -->
+  <section id="implementation" class="section">
+    <div class="section-label">SECTION 04</div>
+    <h2 class="section-title">Live Implementation</h2>
+    <p class="section-sub">Upload your real resume and job description for AI-powered analysis</p>
+
+    <div class="impl-layout">
+      <!-- Upload Panel -->
+      <div class="upload-panel glass-card" id="uploadPanel">
+        <div class="panel-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Upload Documents
+        </div>
+        <div class="upload-zone" id="dropResume">
+          <input type="file" id="resumeFile" accept=".pdf,.doc,.docx" hidden/>
+          <div class="uz-icon">📄</div>
+          <div class="uz-title">Resume</div>
+          <div class="uz-hint">Click to upload PDF</div>
+          <div class="uz-fname" id="resumeNameDisplay"></div>
+        </div>
+        <div class="upload-zone" id="dropJd">
+          <input type="file" id="jdFile" accept=".pdf,.doc,.docx" hidden/>
+          <div class="uz-icon">📋</div>
+          <div class="uz-title">Job Description</div>
+          <div class="uz-hint">Click to upload PDF</div>
+          <div class="uz-fname" id="jdNameDisplay"></div>
+        </div>
+        <button class="btn-primary full-width" id="analyzeBtn" onclick="analyzeResume()">
+          <span class="btn-glow"></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Analyze Resume
+        </button>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="results-panel" id="resultsPanel">
+        <!-- Idle state -->
+        <div class="idle-state" id="idleState">
+          <div class="idle-icon">◈</div>
+          <div class="idle-text">Upload files and click Analyze to begin</div>
+        </div>
+
+        <!-- Loading state -->
+        <div class="loading-state hidden" id="loadingState">
+          <div class="scanner-wrap">
+            <div class="scanner-ring">
+              <div class="s-ring r1"></div>
+              <div class="s-ring r2"></div>
+              <div class="s-ring r3"></div>
+              <div class="s-core">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+              </div>
+            </div>
+          </div>
+          <div class="loading-text">
+            <h3>AI ANALYZING<span class="ldots"></span></h3>
+            <p>Extracting skills · Scoring semantics · Rewriting bullets</p>
+          </div>
+        </div>
+
+        <!-- Results state -->
+        <div class="result-state hidden" id="resultState">
+          <div class="result-holo glass-card">
+            <div class="holo-scanlines"></div>
+            <div class="holo-header">
+              <span class="holo-dot blink"></span>
+              ANALYSIS COMPLETE —
+              <span id="roleDisplay" style="color:#e2e8f0; margin-left:.4rem">ML_ENGINEER</span>
+            </div>
+            <!-- Scores -->
+            <div class="result-scores">
+              <div class="rscore-box">
+                <div class="rscore-ring">
+                  <svg viewBox="0 0 90 90">
+                    <circle class="score-track" cx="45" cy="45" r="38"/>
+                    <circle class="score-progress cyan" id="rFinal" cx="45" cy="45" r="38"/>
+                  </svg>
+                  <div class="rscore-val cyan" id="vFinal">0</div>
+                </div>
+                <div class="rscore-lbl">ATS Score</div>
+              </div>
+              <div class="rscore-box">
+                <div class="rscore-ring">
+                  <svg viewBox="0 0 90 90">
+                    <circle class="score-track" cx="45" cy="45" r="38"/>
+                    <circle class="score-progress purple" id="rSemantic" cx="45" cy="45" r="38"/>
+                  </svg>
+                  <div class="rscore-val purple" id="vSemantic">0</div>
+                </div>
+                <div class="rscore-lbl">Semantic</div>
+              </div>
+              <div class="rscore-box">
+                <div class="rscore-ring">
+                  <svg viewBox="0 0 90 90">
+                    <circle class="score-track" cx="45" cy="45" r="38"/>
+                    <circle class="score-progress emerald" id="rSkill" cx="45" cy="45" r="38"/>
+                  </svg>
+                  <div class="rscore-val emerald" id="vSkill">0</div>
+                </div>
+                <div class="rscore-lbl">Skill Match</div>
+              </div>
+            </div>
+            <!-- Skills -->
+            <div class="rskill-section">
+              <div class="rskill-title">Missing Skills</div>
+              <div class="tag-row" id="rMissing"></div>
+            </div>
+            <div class="rskill-section">
+              <div class="rskill-title">Matched Skills</div>
+              <div class="tag-row" id="rMatched"></div>
+            </div>
+            <!-- Bullets -->
+            <div class="rbullets-section">
+              <div class="rskill-title">Improved Bullets</div>
+              <div id="rBullets"></div>
+            </div>
+            <!-- Reasoning -->
+            <div class="reasoning-box" id="rReasoning"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="section-divider"></div>
+<!-- ═══ SECTION 5 — CREDITS (KHATARNAAK) ═══ -->
+<section id="credits" class="section credits-section">
+  <div class="section-label">SECTION 05</div>
+  <h2 class="section-title">Credits</h2>
+  <p class="section-sub">The mind behind the machine</p>
+
+  <div class="credits-scene">
+
+    <!-- Ambient glows -->
+    <div class="credits-ambient-1"></div>
+    <div class="credits-ambient-2"></div>
+    <div class="credits-ambient-3"></div>
+
+    <!-- Floating particles around card -->
+    <div class="credits-particles">
+      <span class="cp cp1"></span>
+      <span class="cp cp2"></span>
+      <span class="cp cp3"></span>
+      <span class="cp cp4"></span>
+      <span class="cp cp5"></span>
+      <span class="cp cp6"></span>
+    </div>
+
+    <!-- ═══ THE CARD ═══ -->
+    <div class="credits-card" id="creditsCard">
+
+      <!-- Corner accents -->
+      <span class="corner c-tl"></span>
+      <span class="corner c-tr"></span>
+      <span class="corner c-bl"></span>
+      <span class="corner c-br"></span>
+
+      <!-- Scanline overlay -->
+      <div class="card-scanlines"></div>
+
+      <!-- Top glow bar -->
+      <div class="card-top-bar"></div>
+
+      <!-- ═══ HEADER SECTION ═══ -->
+      <div class="credits-header-section">
+
+        <!-- Avatar -->
+        <div class="avatar-wrap">
+          <div class="avatar-ring-outer"></div>
+          <div class="avatar-ring-inner"></div>
+          <div class="avatar-hex-ring"></div>
+          <div class="avatar-core">
+            <svg width="52" height="52" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="32" r="20" fill="#0d1117" stroke="#22d3ee" stroke-width="2"/>
+              <ellipse cx="44" cy="26" rx="5" ry="4" fill="rgba(34,211,238,0.12)"/>
+              <circle cx="43" cy="32" r="4" fill="#22d3ee" opacity="0.9"/>
+              <circle cx="57" cy="32" r="4" fill="#22d3ee" opacity="0.9"/>
+              <circle cx="43" cy="32" r="1.5" fill="white"/>
+              <circle cx="57" cy="32" r="1.5" fill="white"/>
+              <path d="M25 58 Q25 52 50 52 Q75 52 75 58 L78 85 Q78 90 50 90 Q22 90 22 85 Z"
+                    fill="#0d1117" stroke="#22d3ee" stroke-width="2"/>
+              <rect x="43" y="52" width="14" height="6" rx="3"
+                    fill="rgba(34,211,238,0.2)" stroke="#22d3ee" stroke-width="1"/>
+            </svg>
+          </div>
+          <!-- Orbiting dot -->
+          <div class="avatar-orbit">
+            <span class="orbit-dot"></span>
+          </div>
+        </div>
+
+        <!-- Status badge -->
+        <div class="status-badge">
+          <span class="status-dot"></span>
+          <span class="status-text">ACTIVE — BUILDING AI SYSTEMS</span>
+        </div>
+
+        <!-- Name with glow -->
+        <h3 class="credits-name">
+          <span class="name-first">Chittransh</span>
+          <span class="name-last">Verma</span>
+        </h3>
+
+        <!-- Role tag -->
+        <div class="credits-role-wrap">
+          <div class="credits-role">3rd Year B.Tech CSE</div>
+          <div class="role-line"></div>
+        </div>
+
+        <!-- Subtitle -->
+        <div class="credits-subtitle">
+          AI / ML & Software Development Enthusiast
+        </div>
+
+      </div>
+
+      <!-- ═══ BIO SECTION ═══ -->
+      <div class="credits-bio">
+        <div class="bio-quote-mark">"</div>
+        <p class="bio-text">
+          Passionate about building intelligent systems that solve real-world problems.
+          From neural networks to production APIs — I turn complex AI into elegant solutions.
+        </p>
+      </div>
+
+      <!-- ═══ DIVIDER ═══ -->
+      <div class="credits-divider">
+        <span class="div-line"></span>
+        <span class="div-icon">◈</span>
+        <span class="div-line"></span>
+      </div>
+
+      <!-- ═══ SKILLS GRID ═══ -->
+      <div class="credits-skills-title">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Core Expertise
+      </div>
+      <div class="credits-skills-grid">
+        <div class="cskill-chip">
+          <span class="cskill-icon">🧠</span>
+          <span>Machine Learning</span>
+        </div>
+        <div class="cskill-chip">
+          <span class="cskill-icon">🤖</span>
+          <span>Deep Learning</span>
+        </div>
+        <div class="cskill-chip">
+          <span class="cskill-icon">📝</span>
+          <span>NLP</span>
+        </div>
+        <div class="cskill-chip">
+          <span class="cskill-icon">🐍</span>
+          <span>Python</span>
+        </div>
+        <div class="cskill-chip">
+          <span class="cskill-icon">⚡</span>
+          <span>FastAPI</span>
+        </div>
+        <div class="cskill-chip">
+          <span class="cskill-icon">🔥</span>
+          <span>LLM Integration</span>
+        </div>
+      </div>
+
+      <!-- ═══ STATS ROW ═══ -->
+      <div class="credits-stats">
+        <div class="cstat">
+          <div class="cstat-val">
+            <span class="cstat-icon">🦙</span>
+            LLaMA 3
+          </div>
+          <div class="cstat-lbl">LLM Engine</div>
+          <div class="cstat-bar"><div class="cstat-fill cf-cyan" style="width:92%"></div></div>
+        </div>
+        <div class="cstat-sep"></div>
+        <div class="cstat">
+          <div class="cstat-val">
+            <span class="cstat-icon">⚡</span>
+            FastAPI
+          </div>
+          <div class="cstat-lbl">Backend</div>
+          <div class="cstat-bar"><div class="cstat-fill cf-purple" style="width:88%"></div></div>
+        </div>
+        <div class="cstat-sep"></div>
+        <div class="cstat">
+          <div class="cstat-val">
+            <span class="cstat-icon">🎯</span>
+            E5-Large
+          </div>
+          <div class="cstat-lbl">Embeddings</div>
+          <div class="cstat-bar"><div class="cstat-fill cf-emerald" style="width:85%"></div></div>
+        </div>
+      </div>
+
+      <!-- ═══ DIVIDER 2 ═══ -->
+      <div class="credits-divider">
+        <span class="div-line"></span>
+        <span class="div-icon">◈</span>
+        <span class="div-line"></span>
+      </div>
+
+      <!-- ═══ SOCIAL LINKS ═══ -->
+      <div class="credits-social-section">
+        <div class="credits-social-title">Connect</div>
+        <div class="credits-links">
+          <!-- GitHub -->
+          <a href="https://github.com/Chittransh-89" class="credit-link github" target="_blank" aria-label="GitHub">
+            <div class="cl-icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+              </svg>
+            </div>
+            <div class="cl-info">
+              <span class="cl-name">GitHub</span>
+              <span class="cl-handle">@Chittransh-89</span>
+            </div>
+            <span class="cl-arrow">→</span>
+          </a>
+
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/in/chittransh-verma-525992338/" class="credit-link linkedin" target="_blank" aria-label="LinkedIn">
+            <div class="cl-icon-wrap linkedin-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+            </div>
+            <div class="cl-info">
+              <span class="cl-name">LinkedIn</span>
+              <span class="cl-handle">Chittransh Verma</span>
+            </div>
+            <span class="cl-arrow">→</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ═══ BOTTOM TAG ═══ -->
+      <div class="credits-footer-tag">
+        <div class="cft-line"></div>
+        <div class="cft-content">
+          <span class="cft-icon">◈</span>
+          <span>AI Resume Analyzer · 2025</span>
+        </div>
+        <div class="cft-sub">Engineered with Intelligence & Precision</div>
+      </div>
+
+    </div><!-- end .credits-card -->
+  </div><!-- end .credits-scene -->
+</section>
+
+  <!-- ═══ FOOTER — PROFESSIONAL ═══ -->
+<footer class="footer">
+
+  <!-- Top glow line -->
+  <div class="footer-glow-line"></div>
+
+  <div class="footer-container">
+
+    <!-- Row 1: Brand + Navigation + Social -->
+    <div class="footer-grid">
+
+      <!-- Brand Column -->
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <span class="footer-logo-icon">◈</span>
+          <span>AI Resume <span class="fc">Analyzer</span></span>
+        </div>
+        <p class="footer-desc">
+          Precision-driven resume intelligence powered by LLaMA 3, 
+          semantic embeddings, and advanced NLP — engineered to 
+          give your career an unfair advantage.
+        </p>
+        <div class="footer-tech-badges">
+          <span class="ft-badge">🧠 LLaMA 3</span>
+          <span class="ft-badge">⚡ FastAPI</span>
+          <span class="ft-badge">🎯 E5-Large</span>
+        </div>
+      </div>
+
+      <!-- Quick Links Column -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">
+          <span class="fct-dot"></span>
+          Navigation
+        </h4>
+        <ul class="footer-nav">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#about">About System</a></li>
+          <li><a href="#demo">Interactive Demo</a></li>
+          <li><a href="#implementation">Live Analyzer</a></li>
+          <li><a href="#credits">Credits</a></li>
+        </ul>
+      </div>
+
+      <!-- Tech Stack Column -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">
+          <span class="fct-dot purple"></span>
+          Tech Stack
+        </h4>
+        <ul class="footer-nav">
+          <li><a href="#">Python & FastAPI</a></li>
+          <li><a href="#">Groq + LLaMA 3</a></li>
+          <li><a href="#">SentenceTransformers</a></li>
+          <li><a href="#">Cosine Similarity</a></li>
+          <li><a href="#">pdfplumber & NLP</a></li>
+        </ul>
+      </div>
+
+      <!-- Connect Column -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">
+          <span class="fct-dot emerald"></span>
+          Connect
+        </h4>
+        <div class="footer-socials">
+          <!-- GitHub -->
+          <a href="https://github.com/Chittransh-89" class="footer-social-card" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            <div>
+              <span class="fsc-name">GitHub</span>
+              <span class="fsc-handle">@Chittransh-89</span>
+            </div>
+          </a>
+          <!-- LinkedIn -->
+          <a href="https://www.linkedin.com/in/chittransh-verma-525992338/" class="footer-social-card" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            <div>
+              <span class="fsc-name">LinkedIn</span>
+              <span class="fsc-handle">Chittransh Verma</span>
+            </div>
+          </a>
+        </div>
+
+        <!-- Status indicator -->
+        <div class="footer-status">
+          <span class="fs-dot"></span>
+          System Online — All Models Loaded
+        </div>
+      </div>
+
+    </div><!-- end .footer-grid -->
+
+    <!-- Divider -->
+    <div class="footer-divider">
+      <span class="fd-line"></span>
+      <span class="fd-icon">◈</span>
+      <span class="fd-line"></span>
+    </div>
+
+    <!-- Bottom Bar -->
+    <div class="footer-bottom">
+      <div class="fb-left">
+        © 2025 AI Resume Analyzer · Engineered with Intelligence & Precision
+      </div>
+      <div class="fb-right">
+        <span class="fb-tag">Built by <strong>Chittransh Verma</strong></span>
+        <span class="fb-dot">·</span>
+        <span class="fb-tag">Powered by <strong>LLaMA 3 + Groq</strong></span>
+      </div>
+    </div>
+
+  </div><!-- end .footer-container -->
+
+  <!-- Bottom edge glow -->
+  <div class="footer-bottom-glow"></div>
+
+</footer>
+  <!-- index.html me replace karo -->
+<div class="toast" id="toast" style="opacity:0;pointer-events:none;">Copied!</div>
+  <script src="script.js"></script>
+</body>
+</html>
