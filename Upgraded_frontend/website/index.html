@@ -29,6 +29,7 @@
         <li><a href="#home" class="nav-link">Home</a></li>
         <li><a href="#about" class="nav-link">About</a></li>
         <li><a href="#demo" class="nav-link">Demo</a></li>
+        <li><a href="#classification" class="nav-link">Role</a></li>
         <li><a href="#implementation" class="nav-link">Implementation</a></li>
         <li><a href="#credits" class="nav-link">Credits</a></li>
       </ul>
@@ -441,7 +442,137 @@
       </div>
     </div>
   </section>
+
   <div class="section-divider"></div>
+
+  <div class="section-divider"></div>
+
+<!-- ═══ SECTION 04 — ROLE CLASSIFICATION ═══ -->
+<section id="classification" class="section">
+  <div class="section-label">SECTION 04</div>
+  <h2 class="section-title">Role Classification</h2>
+  <p class="section-sub">Upload a document and let AI classify its type & target role</p>
+
+  <div class="classify-layout">
+
+    <!-- Upload Side -->
+    <div class="classify-upload glass-card">
+      <div class="panel-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17 8 12 3 7 8"/>
+          <line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Upload Document
+      </div>
+      <div class="upload-zone" id="dropClassify">
+        <input type="file" id="classifyFile" accept=".pdf,.doc,.docx" hidden/>
+        <div class="uz-icon">📄</div>
+        <div class="uz-title">Resume or Job Description</div>
+        <div class="uz-hint">Click to upload PDF</div>
+        <div class="uz-fname" id="classifyNameDisplay"></div>
+      </div>
+      <button class="btn-primary full-width" id="classifyBtn" onclick="classifyDocument()">
+        <span class="btn-glow"></span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        Classify Document
+      </button>
+    </div>
+
+    <!-- Result Side -->
+    <div class="classify-result-panel">
+
+      <!-- Idle -->
+      <div class="classify-idle" id="classifyIdle">
+        <div class="idle-icon">◈</div>
+        <div class="idle-text">Upload a file and click Classify to begin</div>
+      </div>
+
+      <!-- Loading -->
+      <div class="classify-loading hidden" id="classifyLoading">
+        <div class="scanner-wrap">
+          <div class="scanner-ring">
+            <div class="s-ring r1"></div>
+            <div class="s-ring r2"></div>
+            <div class="s-ring r3"></div>
+            <div class="s-core">🧠</div>
+          </div>
+        </div>
+        <div class="loading-text">
+          <h3>CLASSIFYING<span class="ldots"></span></h3>
+          <p>Detecting document type & role</p>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div class="classify-result hidden" id="classifyResult">
+        <div class="classify-result-card">
+          <div class="holo-scanlines"></div>
+
+          <!-- Top bar -->
+          <div class="crc-top-bar"></div>
+
+          <!-- Header -->
+          <div class="holo-header">
+            <span class="holo-dot blink"></span>
+            CLASSIFICATION COMPLETE
+          </div>
+
+          <!-- Document Type -->
+          <div class="crc-section">
+            <div class="crc-label">Document Type</div>
+            <div class="crc-type-row">
+              <span class="crc-type-icon" id="crcTypeIcon">📄</span>
+              <span class="crc-type-badge" id="crcTypeBadge">RESUME</span>
+            </div>
+          </div>
+
+          <!-- Detected Role -->
+          <div class="crc-section">
+            <div class="crc-label">Detected Role</div>
+            <div class="crc-role" id="crcRole">AI ENGINEER</div>
+          </div>
+
+          <!-- Confidence -->
+          <div class="crc-section">
+            <div class="crc-label">Confidence</div>
+            <div class="crc-conf-row">
+              <div class="crc-conf-bar">
+                <div class="crc-conf-fill" id="crcConfBar" style="width:0%"></div>
+              </div>
+              <span class="crc-conf-val" id="crcConfVal">0%</span>
+            </div>
+          </div>
+
+          <!-- Is Resume? -->
+          <div class="crc-section">
+            <div class="crc-label">Is Resume?</div>
+            <div class="crc-resume-status" id="crcResumeStatus">
+              <span class="crc-resume-icon" id="crcResumeIcon">✅</span>
+              <span class="crc-resume-text" id="crcResumeText">Yes</span>
+            </div>
+          </div>
+
+          <!-- Raw JSON Output -->
+          <div class="crc-section">
+            <div class="crc-label">Raw API Output</div>
+            <pre class="crc-json" id="crcJson">{}</pre>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<div class="section-divider"></div>
   <!-- ═══ SECTION 4 — IMPLEMENTATION ═══ -->
   <section id="implementation" class="section">
     <div class="section-label">SECTION 04</div>
