@@ -1069,3 +1069,926 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   display: inline-block;
   animation: wordReveal 0.6s ease forwards;
 }
+
+/* ══════════════════════════════════════════════
+   ROLE CLASSIFICATION SECTION
+   ══════════════════════════════════════════════ */
+
+.role-classification-section {
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.role-class-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(248, 250, 252, 0.5);
+  margin-bottom: 1rem;
+}
+
+/* ══ GRID ══ */
+.role-class-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 600px) {
+  .role-class-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ══ CARDS ══ */
+.role-class-card {
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: rgba(248, 250, 252, 0.02);
+  border: 1px solid rgba(248, 250, 252, 0.06);
+  transition: all 0.4s ease;
+  animation: fadeSlideUp 0.5s ease both;
+}
+
+.role-class-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.role-class-card:hover {
+  border-color: rgba(34, 211, 238, 0.2);
+  background: rgba(34, 211, 238, 0.03);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Card header */
+.rcc-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.85rem;
+}
+
+.rcc-icon {
+  font-size: 1.2rem;
+}
+
+.rcc-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(148, 163, 184, 0.5);
+}
+
+/* Card body */
+.rcc-body {
+  margin-bottom: 0.75rem;
+}
+
+.rcc-role {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.5rem;
+  word-break: break-word;
+}
+
+.rcc-type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* Type badges */
+.rcc-type-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+}
+
+.resume-badge {
+  background: rgba(34, 211, 238, 0.08);
+  color: rgba(34, 211, 238, 0.85);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+.jd-badge {
+  background: rgba(168, 85, 247, 0.08);
+  color: rgba(168, 85, 247, 0.85);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Confidence text */
+.rcc-confidence {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(52, 211, 153, 0.85);
+}
+
+/* Confidence bar */
+.rcc-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(248, 250, 252, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rcc-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.5s ease;
+}
+
+.rcc-cyan {
+  background: linear-gradient(90deg, #22d3ee, rgba(34, 211, 238, 0.4));
+}
+
+.rcc-purple {
+  background: linear-gradient(90deg, #a855f7, rgba(168, 85, 247, 0.4));
+}
+
+/* ══ ROLE MATCH STATUS ══ */
+.role-match-status {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.85rem;
+  background: rgba(248, 250, 252, 0.02);
+  border: 1px solid rgba(248, 250, 252, 0.06);
+  transition: all 0.4s ease;
+  animation: fadeSlideUp 0.5s ease 0.2s both;
+}
+
+.role-match-status:hover {
+  border-color: rgba(34, 211, 238, 0.15);
+}
+
+/* Match status — dynamic classes */
+.role-match-status.match-yes {
+  border-color: rgba(52, 211, 153, 0.2);
+  background: rgba(52, 211, 153, 0.03);
+}
+
+.role-match-status.match-no {
+  border-color: rgba(251, 113, 133, 0.2);
+  background: rgba(251, 113, 133, 0.03);
+}
+
+.role-match-status.match-partial {
+  border-color: rgba(251, 191, 36, 0.2);
+  background: rgba(251, 191, 36, 0.03);
+}
+
+.rms-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.rms-info {
+  flex: 1;
+}
+
+.rms-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 0.15rem;
+}
+
+.rms-desc {
+  font-size: 0.72rem;
+  color: rgba(148, 163, 184, 0.55);
+  line-height: 1.4;
+}
+
+.rms-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.rms-badge.badge-match {
+  background: rgba(52, 211, 153, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+}
+
+.rms-badge.badge-mismatch {
+  background: rgba(251, 113, 133, 0.1);
+  color: #fb7185;
+  border: 1px solid rgba(251, 113, 133, 0.25);
+}
+
+.rms-badge.badge-partial {
+  background: rgba(251, 191, 36, 0.1);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.25);
+}
+
+/* ══════════════════════════════════════════════
+   ROLE CLASSIFICATION SHOWCASE SECTION
+   ══════════════════════════════════════════════ */
+
+/* Layout */
+.role-demo-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .role-demo-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ══ LEFT — EXPLANATION PANEL ══ */
+.role-explain-card {
+  padding: 1.75rem;
+  border-radius: 1.25rem;
+  background: rgba(248, 250, 252, 0.02);
+  border: 1px solid rgba(248, 250, 252, 0.06);
+  transition: all 0.3s ease;
+}
+
+.role-explain-card:hover {
+  border-color: rgba(34, 211, 238, 0.15);
+}
+
+.rec-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.rec-icon {
+  font-size: 1.3rem;
+}
+
+.rec-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+/* Steps */
+.rec-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.rec-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.85rem;
+  border-radius: 0.75rem;
+  background: rgba(248, 250, 252, 0.015);
+  border: 1px solid rgba(248, 250, 252, 0.04);
+  transition: all 0.3s ease;
+}
+
+.rec-step:hover {
+  border-color: rgba(34, 211, 238, 0.15);
+  background: rgba(34, 211, 238, 0.02);
+  transform: translateX(4px);
+}
+
+.rec-num {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #22d3ee;
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.4rem;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.rec-step-title {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(248, 250, 252, 0.85);
+  margin-bottom: 0.15rem;
+}
+
+.rec-step-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.5);
+  line-height: 1.4;
+}
+
+/* Tech used */
+.rec-tech-used {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(248, 250, 252, 0.05);
+}
+
+.rec-tech-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(148, 163, 184, 0.4);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.rec-tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* ══ RIGHT — SHOWCASE CARDS ══ */
+.role-display-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.role-showcase-card {
+  position: relative;
+  padding: 1.5rem;
+  border-radius: 1.25rem;
+  background: rgba(248, 250, 252, 0.02);
+  border: 1px solid rgba(248, 250, 252, 0.06);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  animation: fadeSlideUp 0.6s ease both;
+}
+
+.role-showcase-card:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.role-showcase-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.rsc-resume:hover {
+  border-color: rgba(34, 211, 238, 0.2);
+}
+
+.rsc-jd:hover {
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+/* Top accent bar */
+.rsc-top-bar {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  opacity: 0.5;
+}
+
+.cyan-bar {
+  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+}
+
+.purple-bar {
+  background: linear-gradient(90deg, transparent, #a855f7, transparent);
+}
+
+/* Card header */
+.rsc-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.rsc-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.cyan-wrap {
+  background: rgba(34, 211, 238, 0.06);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+}
+
+.purple-wrap {
+  background: rgba(168, 85, 247, 0.06);
+  border: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+.rsc-doc-type {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.rsc-doc-hint {
+  font-size: 0.7rem;
+  color: rgba(148, 163, 184, 0.45);
+  margin-top: 0.1rem;
+}
+
+/* Card body */
+.rsc-body {
+  margin-bottom: 1rem;
+}
+
+.rsc-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(148, 163, 184, 0.4);
+  margin-bottom: 0.35rem;
+}
+
+.rsc-role-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #f8fafc;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
+
+.rsc-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.rsc-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+}
+
+.cyan-badge {
+  background: rgba(34, 211, 238, 0.08);
+  color: rgba(34, 211, 238, 0.85);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+.purple-badge {
+  background: rgba(168, 85, 247, 0.08);
+  color: rgba(168, 85, 247, 0.85);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.rsc-conf {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(52, 211, 153, 0.85);
+}
+
+/* Confidence bar */
+.rsc-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(248, 250, 252, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.rsc-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1.5s ease;
+}
+
+.cyan-fill {
+  background: linear-gradient(90deg, #22d3ee, rgba(34, 211, 238, 0.3));
+}
+
+.purple-fill {
+  background: linear-gradient(90deg, #a855f7, rgba(168, 85, 247, 0.3));
+}
+
+/* Sample output */
+.rsc-sample-output {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(248, 250, 252, 0.05);
+}
+
+.rsc-output-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(148, 163, 184, 0.35);
+  margin-bottom: 0.5rem;
+}
+
+.rsc-code {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(248, 250, 252, 0.05);
+  border-radius: 0.65rem;
+  padding: 0.85rem 1rem;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.72rem;
+  color: rgba(34, 211, 238, 0.75);
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 0;
+}
+
+/* ══ MATCH RESULT ══ */
+.role-match-result {
+  animation: fadeSlideUp 0.6s ease 0.3s both;
+}
+
+.rmr-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding: 0.5rem 0;
+}
+
+.rmr-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.2), transparent);
+}
+
+.rmr-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+  flex-shrink: 0;
+  animation: dividerPulse 3s ease-in-out infinite;
+}
+
+.rmr-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.rmr-card.match-success {
+  background: rgba(52, 211, 153, 0.04);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.rmr-card.match-fail {
+  background: rgba(251, 113, 133, 0.04);
+  border: 1px solid rgba(251, 113, 133, 0.2);
+}
+
+.rmr-card:hover {
+  transform: translateY(-2px);
+}
+
+.rmr-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.rmr-info {
+  flex: 1;
+}
+
+.rmr-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin-bottom: 0.1rem;
+}
+
+.rmr-desc {
+  font-size: 0.72rem;
+  color: rgba(148, 163, 184, 0.5);
+}
+
+.rmr-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════
+   ROLE CLASSIFICATION SECTION
+   ══════════════════════════════════════════════ */
+
+.classify-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .classify-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Result panel */
+.classify-result-panel {
+  min-height: 400px;
+}
+
+.classify-idle {
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--dim);
+}
+
+.classify-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  min-height: 400px;
+}
+
+/* ══ RESULT CARD ══ */
+.classify-result-card {
+  position: relative;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  overflow: hidden;
+  animation: holoIn 0.6s ease;
+}
+
+.crc-top-bar {
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #22d3ee, #a855f7, #22d3ee, transparent);
+  border-radius: 0 0 2px 2px;
+  opacity: 0.5;
+}
+
+/* Sections */
+.crc-section {
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.crc-section:last-child {
+  margin-bottom: 0;
+}
+
+.crc-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(148, 163, 184, 0.45);
+  margin-bottom: 0.5rem;
+}
+
+/* Document Type */
+.crc-type-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.crc-type-icon {
+  font-size: 1.8rem;
+}
+
+.crc-type-badge {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.4rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(34, 211, 238, 0.08);
+  color: #22d3ee;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+.crc-type-badge.type-jd {
+  background: rgba(168, 85, 247, 0.08);
+  color: #a855f7;
+  border-color: rgba(168, 85, 247, 0.2);
+}
+
+/* Role */
+.crc-role {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #f8fafc, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 15px rgba(34, 211, 238, 0.15));
+}
+
+/* Confidence */
+.crc-conf-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.crc-conf-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(248, 250, 252, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.crc-conf-fill {
+  height: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #22d3ee, #a855f7);
+  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+}
+
+.crc-conf-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #22d3ee;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* Resume status */
+.crc-resume-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.65rem;
+}
+
+.crc-resume-status.is-resume {
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.crc-resume-status.not-resume {
+  background: rgba(251, 191, 36, 0.06);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.crc-resume-icon {
+  font-size: 1.1rem;
+}
+
+.crc-resume-text {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.crc-resume-text.text-yes {
+  color: #34d399;
+}
+
+.crc-resume-text.text-no {
+  color: #fbbf24;
+}
+
+/* JSON output */
+.crc-json {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(248, 250, 252, 0.06);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+  font-size: 0.78rem;
+  color: rgba(34, 211, 238, 0.75);
+  line-height: 1.7;
+  overflow-x: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ══ CLASSIFICATION — COMPACT UPLOAD ══ */
+.classify-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .classify-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Compact upload panel */
+.classify-upload {
+  padding: 1.25rem;
+}
+
+.classify-upload .panel-title {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.classify-upload .panel-title svg {
+  width: 16px;
+  height: 16px;
+}
+
+.classify-upload .upload-zone {
+  padding: 0.85rem;
+  margin-bottom: 0.75rem;
+  border-radius: 0.75rem;
+}
+
+.classify-upload .uz-icon {
+  font-size: 1.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.classify-upload .uz-title {
+  font-size: 0.82rem;
+  margin-bottom: 0.1rem;
+}
+
+.classify-upload .uz-hint {
+  font-size: 0.72rem;
+}
+
+.classify-upload .uz-fname {
+  font-size: 0.7rem;
+  margin-top: 0.3rem;
+}
+
+.classify-upload .btn-primary {
+  padding: 0.7rem 1.25rem;
+  font-size: 0.82rem;
+  margin-top: 0.5rem;
+}
+
+.classify-upload .btn-primary svg {
+  width: 15px;
+  height: 15px;
+}
