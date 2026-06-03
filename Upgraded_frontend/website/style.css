@@ -1056,3 +1056,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* ══ TOAST ══ */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(20px);padding:.7rem 1.5rem;border-radius:.75rem;background:rgba(13,17,23,.95);border:1px solid var(--border);color:var(--emerald);font-weight:600;font-size:.9rem;opacity:0;pointer-events:none;transition:all .3s;z-index:999;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ══ GRADIENT TEXT + WORD ANIMATION FIX ══ */
+.gradient-text .title-word {
+  background: linear-gradient(135deg, #22d3ee, #a855f7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 0 30px rgba(34, 211, 238, 0.3));
+  opacity: 0;
+  display: inline-block;
+  animation: wordReveal 0.6s ease forwards;
+}
