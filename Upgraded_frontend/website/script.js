@@ -68,11 +68,11 @@ const robotCta = document.getElementById('robotCta');
 const typedText = document.getElementById('typedText');
 const techStack = document.getElementById('techStack');
 
-const ABOUT_TEXT = `This AI Resume Analyzer evaluates resumes using advanced Natural Language Processing techniques.
+const ABOUT_TEXT = `This AI-powered platform combines Resume Analysis and Career Advisory into one unified system.
 
-It compares resumes with job descriptions using semantic similarity and intelligent skill extraction.
+The Resume Analyzer evaluates resumes against job descriptions using semantic similarity, intelligent skill extraction, and ATS scoring powered by Groq LLaMA 3.
 
-The system provides ATS scoring, identifies missing skills, and enhances resume bullet points using LLaMA 3 via Groq API.`;
+CareerBuddy, the AI career advisor, uses GitHub Models GPT-4o with RAG (ChromaDB) and live web search to provide personalized career guidance, learning resources, and YouTube tutorials.`;
 
 function typeText(text, el, speed, cb) {
   el.textContent = '';
@@ -906,3 +906,4 @@ function removeTypingIndicator(id) {
   const el = document.getElementById(id);
   if (el) el.remove();
 }
+
