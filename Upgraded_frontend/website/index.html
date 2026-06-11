@@ -55,18 +55,25 @@
       </div>
       <div class="hero-badge badge-ver">
         <span class="ver-icon">◈</span>
-        v3.0 STABLE
+        v2.0 STABLE
       </div>
     </div>
 
     <!-- Main Title -->
     <h1 class="hero-title">
-      <span class="title-line">
+      <span class="title-line gradient-text">
         <span class="title-word" style="animation-delay:0.1s">AI</span>
         <span class="title-word" style="animation-delay:0.2s">Resume</span>
       </span>
+        <span class="title-line gradient-text">
+        <span class="title-word" style="animation-delay:0.3s">Analyzer</span>
+        </span>
+      <span class="title-line">
+        <span class="title-word title-x" style="animation-delay:0.45s">X</span>
+      </span>
       <span class="title-line gradient-text">
-        <span class="title-word" style="animation-delay:0.35s">Analyzer</span>
+        <span class="title-word" style="animation-delay:0.6s">Career</span>
+        <span class="title-word" style="animation-delay:0.7s">Advisor</span>
       </span>
     </h1>
 
@@ -114,7 +121,7 @@
       <div class="stat">
         <span class="stat-icon">🎯</span>
         <div class="stat-info">
-          <span class="stat-val">E5-Large</span>
+          <span class="stat-val">E5-Base</span>
           <span class="stat-lbl">Embeddings</span>
         </div>
       </div>
@@ -145,11 +152,11 @@
         </svg>
         Start Analysis
       </a>
-      <a href="#demo" class="btn-secondary">
+      <a href="#chatai" class="btn-secondary">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polygon points="5 3 19 12 5 21 5 3"/>
         </svg>
-        Watch Demo
+        Chat With AI
       </a>
     </div>
 
@@ -244,121 +251,106 @@
 </section>
     <div class="section-divider"></div>
   <!-- ═══ SECTION 2 — ABOUT ═══ -->
-  <section id="about" class="section">
-    <div class="section-label">SECTION 02</div>
-    <h2 class="section-title">About the System</h2>
+<section id="about" class="section">
+  <div class="section-label">SECTION 02</div>
+  <h2 class="section-title">About the System</h2>
 
-    <div class="about-layout">
-      <!-- Robot -->
-      <div class="robot-area" id="robotArea">
-        <div class="robot-platform"></div>
-        <div class="robot-wrap" id="robotWrap">
-          <div class="robot-glow-aura" id="robotAura"></div>
-          <!-- Beam -->
-          <div class="robot-beam" id="robotBeam"></div>
-          <svg class="robot-svg" id="robotSvg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
-            <!-- Antenna -->
-            <line x1="100" y1="10" x2="100" y2="28" stroke="#22d3ee" stroke-width="2"/>
-            <circle cx="100" cy="7" r="4" fill="#22d3ee" class="antenna-orb"/>
-            <!-- Head -->
-            <rect x="55" y="28" width="90" height="72" rx="18" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
-            <!-- Visor -->
-            <rect x="62" y="38" width="76" height="28" rx="8" fill="#0a1628" stroke="#1e40af" stroke-width="1"/>
-            <!-- Eyes -->
-            <ellipse cx="82" cy="52" rx="10" ry="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
-            <ellipse cx="118" cy="52" rx="10" ry="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
-            <ellipse cx="82" cy="52" rx="5" ry="5" fill="#22d3ee" class="eye" id="eyeL"/>
-            <ellipse cx="118" cy="52" rx="5" ry="5" fill="#22d3ee" class="eye" id="eyeR"/>
-            <ellipse cx="82" cy="52" rx="2" ry="2" fill="white" opacity="0.9"/>
-            <ellipse cx="118" cy="52" rx="2" ry="2" fill="white" opacity="0.9"/>
-            <!-- Mouth -->
-            <rect x="82" y="78" width="36" height="5" rx="2.5" fill="#22d3ee" opacity="0.6"/>
-            <!-- Neck -->
-            <rect x="88" y="100" width="24" height="18" rx="4" fill="#0d1117" stroke="#22d3ee" stroke-width="1"/>
-            <!-- Body -->
-            <path d="M42 118 Q42 112 48 112 L152 112 Q158 112 158 118 L158 218 Q158 226 150 226 L50 226 Q42 226 42 218 Z" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
-            <!-- Chest panel -->
-            <rect x="62" y="128" width="76" height="50" rx="8" fill="#0a1628" stroke="#1e3a5f" stroke-width="1"/>
-            <!-- Core reactor -->
-            <circle cx="100" cy="153" r="18" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>
-            <circle cx="100" cy="153" r="12" fill="rgba(34,211,238,0.1)" stroke="#22d3ee" stroke-width="1"/>
-            <circle cx="100" cy="153" r="6" fill="#22d3ee" class="reactor-core"/>
-            <!-- Side lights -->
-            <rect x="65" y="132" width="6" height="6" rx="1" fill="#22d3ee" opacity="0.8"/>
-            <rect x="129" y="132" width="6" height="6" rx="1" fill="#a855f7" opacity="0.8"/>
-            <!-- Shoulder joints -->
-            <circle cx="42" cy="128" r="14" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
-            <circle cx="158" cy="128" r="14" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
-            <!-- Left arm -->
-            <path d="M28 128 L18 128 Q10 128 10 136 L10 188 Q10 196 18 196 L32 196" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
-            <rect x="8" y="196" width="28" height="20" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
-            <!-- Right arm -->
-            <path d="M172 128 L182 128 Q190 128 190 136 L190 188 Q190 196 182 196 L168 196" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
-            <rect x="164" y="196" width="28" height="20" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
-            <!-- Legs -->
-            <rect x="66" y="226" width="28" height="50" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
-            <rect x="106" y="226" width="28" height="50" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
-            <!-- Feet -->
-            <rect x="60" y="272" width="40" height="16" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
-            <rect x="100" y="272" width="40" height="16" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
-          </svg>
-          <div class="robot-cta" id="robotCta">Click the Cyborg</div>
-        </div>
+  <div class="about-layout">
+    <!-- Robot -->
+    <div class="robot-area" id="robotArea">
+      <div class="robot-platform"></div>
+      <div class="robot-wrap" id="robotWrap">
+        <div class="robot-glow-aura" id="robotAura"></div>
+        <div class="robot-beam" id="robotBeam"></div>
+        <svg class="robot-svg" id="robotSvg" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <line x1="100" y1="10" x2="100" y2="28" stroke="#22d3ee" stroke-width="2"/>
+          <circle cx="100" cy="7" r="4" fill="#22d3ee" class="antenna-orb"/>
+          <rect x="55" y="28" width="90" height="72" rx="18" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+          <rect x="62" y="38" width="76" height="28" rx="8" fill="#0a1628" stroke="#1e40af" stroke-width="1"/>
+          <ellipse cx="82" cy="52" rx="10" ry="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
+          <ellipse cx="118" cy="52" rx="10" ry="8" fill="#0f172a" stroke="#22d3ee" stroke-width="1"/>
+          <ellipse cx="82" cy="52" rx="5" ry="5" fill="#22d3ee" class="eye" id="eyeL"/>
+          <ellipse cx="118" cy="52" rx="5" ry="5" fill="#22d3ee" class="eye" id="eyeR"/>
+          <ellipse cx="82" cy="52" rx="2" ry="2" fill="white" opacity="0.9"/>
+          <ellipse cx="118" cy="52" rx="2" ry="2" fill="white" opacity="0.9"/>
+          <rect x="82" y="78" width="36" height="5" rx="2.5" fill="#22d3ee" opacity="0.6"/>
+          <rect x="88" y="100" width="24" height="18" rx="4" fill="#0d1117" stroke="#22d3ee" stroke-width="1"/>
+          <path d="M42 118 Q42 112 48 112 L152 112 Q158 112 158 118 L158 218 Q158 226 150 226 L50 226 Q42 226 42 218 Z" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+          <rect x="62" y="128" width="76" height="50" rx="8" fill="#0a1628" stroke="#1e3a5f" stroke-width="1"/>
+          <circle cx="100" cy="153" r="18" fill="none" stroke="#22d3ee" stroke-width="1" opacity="0.5"/>
+          <circle cx="100" cy="153" r="12" fill="rgba(34,211,238,0.1)" stroke="#22d3ee" stroke-width="1"/>
+          <circle cx="100" cy="153" r="6" fill="#22d3ee" class="reactor-core"/>
+          <rect x="65" y="132" width="6" height="6" rx="1" fill="#22d3ee" opacity="0.8"/>
+          <rect x="129" y="132" width="6" height="6" rx="1" fill="#a855f7" opacity="0.8"/>
+          <circle cx="42" cy="128" r="14" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+          <circle cx="158" cy="128" r="14" fill="#0d1117" stroke="#22d3ee" stroke-width="1.5"/>
+          <path d="M28 128 L18 128 Q10 128 10 136 L10 188 Q10 196 18 196 L32 196" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+          <rect x="8" y="196" width="28" height="20" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+          <path d="M172 128 L182 128 Q190 128 190 136 L190 188 Q190 196 182 196 L168 196" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+          <rect x="164" y="196" width="28" height="20" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+          <rect x="66" y="226" width="28" height="50" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+          <rect x="106" y="226" width="28" height="50" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+          <rect x="60" y="272" width="40" height="16" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+          <rect x="100" y="272" width="40" height="16" rx="6" fill="#0d1117" stroke="#22d3ee" stroke-width="1.2"/>
+        </svg>
+        <div class="robot-cta" id="robotCta">Click the Cyborg</div>
       </div>
+    </div>
 
-      <!-- Hologram Panel -->
-      <div class="holo-panel-wrap" id="holoPanelWrap">
-        <div class="holo-panel" id="holoPanel">
-          <div class="holo-scanlines"></div>
-          <div class="holo-header">
-            <span class="holo-dot blink"></span>
-            SYSTEM BRIEFING — CLASSIFIED
-          </div>
-          <div class="holo-body">
-            <p class="typed-text" id="typedText"></p>
-            <div class="tech-stack" id="techStack" style="opacity:0">
-              <div class="stack-group">
-                <div class="stack-title">Backend</div>
-                <div class="stack-tags">
-                  <span class="stag">Python</span>
-                  <span class="stag">FastAPI</span>
-                  <span class="stag">Groq API</span>
-                  <span class="stag">LLaMA 3</span>
-                </div>
+    <!-- Hologram Panel -->
+    <div class="holo-panel-wrap" id="holoPanelWrap">
+      <div class="holo-panel" id="holoPanel">
+        <div class="holo-scanlines"></div>
+        <div class="holo-header">
+          <span class="holo-dot blink"></span>
+          SYSTEM BRIEFING — CLASSIFIED
+        </div>
+        <div class="holo-body">
+          <p class="typed-text" id="typedText"></p>
+          <div class="tech-stack" id="techStack" style="opacity:0">
+            <div class="stack-group">
+              <div class="stack-title">Backend</div>
+              <div class="stack-tags">
+                <span class="stag">Python</span>
+                <span class="stag">FastAPI</span>
+                <span class="stag">Uvicorn</span>
+                <span class="stag">AsyncIO</span>
+                <span class="stag">HTTPX</span>
               </div>
-              <div class="stack-group">
-                <div class="stack-title">AI / ML</div>
-                <div class="stack-tags">
-                  <span class="stag purple">SentenceTransformers</span>
-                  <span class="stag purple">E5-Large</span>
-                  <span class="stag purple">Cosine Similarity</span>
-                  <span class="stag purple">NLP</span>
-                </div>
+            </div>
+            <div class="stack-group">
+              <div class="stack-title">AI / ML</div>
+              <div class="stack-tags">
+                <span class="stag purple">GitHub Models GPT-4o</span>
+                <span class="stag purple">Groq LLaMA 3</span>
+                <span class="stag purple">SentenceTransformers</span>
+                <span class="stag purple">Cosine Similarity</span>
+                <span class="stag purple">RAG</span>
               </div>
-              <div class="stack-group">
-                <div class="stack-title">Processing</div>
-                <div class="stack-tags">
-                  <span class="stag emerald">pdfplumber</span>
-                  <span class="stag emerald">Regex</span>
-                  <span class="stag emerald">AsyncIO</span>
-                  <span class="stag emerald">HTTPX</span>
-                </div>
+            </div>
+            <div class="stack-group">
+              <div class="stack-title">Processing</div>
+              <div class="stack-tags">
+                <span class="stag emerald">pdfplumber</span>
+                <span class="stag emerald">ChromaDB</span>
+                <span class="stag emerald">Regex</span>
+                <span class="stag emerald">Scikit-learn</span>
               </div>
-              <div class="stack-group">
-                <div class="stack-title">Frontend</div>
-                <div class="stack-tags">
-                  <span class="stag amber">HTML5</span>
-                  <span class="stag amber">CSS3</span>
-                  <span class="stag amber">Canvas API</span>
-                  <span class="stag amber">Vanilla JS</span>
-                </div>
+            </div>
+            <div class="stack-group">
+              <div class="stack-title">Frontend</div>
+              <div class="stack-tags">
+                <span class="stag amber">HTML</span>
+                <span class="stag amber">CSS</span>
+                <span class="stag amber">JavaScript</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
   <div class="section-divider"></div>
   <!-- ═══ SECTION 3 — DEMO ═══ -->
   <section id="demo" class="section">
@@ -1014,7 +1006,7 @@
         <div class="cstat">
           <div class="cstat-val">
             <span class="cstat-icon">🎯</span>
-            E5-Large
+            E5-Base
           </div>
           <div class="cstat-lbl">Embeddings</div>
           <div class="cstat-bar"><div class="cstat-fill cf-emerald" style="width:85%"></div></div>
