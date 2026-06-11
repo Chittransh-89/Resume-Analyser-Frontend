@@ -334,7 +334,7 @@ async function analyzeResume() {
   }
   showState('loading');
   const formData = new FormData();
-  formData.append('file', resumeInput.files[0]);
+  formData.append('resume', resumeInput.files[0]);
   formData.append('jd', jdInput.files[0]);
 
   try {
@@ -379,76 +379,247 @@ function highlightKw(text) {
     .replace(rx, m => `<span class="keyword">${m}</span>`);
 }
 
+/* ══ RENDER RESULT (UPGRADED FOR NEW API) ══ */
 function renderResult(data) {
 
-  /* ═══ ROLE DISPLAY ═══ */
-  document.getElementById('roleDisplay').textContent =
-    data.role_match?.resume_role || data.validation?.job_role || data.validation?.resume?.job_role || 'UNKNOWN';
-
-  /* ═══ SCORES ═══ */
-  const final = Math.round(data.scores?.final || 0);
-  const semantic = Math.round(data.scores?.semantic || 0);
-  const skill = Math.round(data.scores?.skill || 0);
-
-  setTimeout(() => {
-    animateRing('rFinal', final);
-    animateCounter('vFinal', 0, final, 1600);
-    animateRing('rSemantic', semantic);
-    animateCounter('vSemantic', 0, semantic, 1600);
-    animateRing('rSkill', skill);
-    animateCounter('vSkill', 0, skill, 1600);
-  }, 300);
-
-  /* ═══ SKILLS ═══ */
-  const missing = data.skills?.missing || [];
-  const matched = data.skills?.matched || [];
-  document.getElementById('rMissing').innerHTML = missing.map(s =>
-    `<span class="tag tag-missing">${s}</span>`).join('');
-  document.getElementById('rMatched').innerHTML = matched.slice(0, 14).map(s =>
-    `<span class="tag tag-matched">${s}</span>`).join('')
-    + (matched.length > 14
-      ? `<span class="tag tag-matched" style="opacity:.6">+${matched.length - 14}</span>`
-      : '');
-
-  /* ═══ BULLETS — Original + Improved ═══ */
-  const bullets = data.improved_bullets || [];
-  const list = document.getElementById('rBullets');
-  list.innerHTML = '';
-
-  bullets.slice(0, 8).forEach((b, i) => {
-    const card = document.createElement('div');
-    card.className = 'rbullet-card';
-    card.style.animationDelay = (i * 0.08) + 's';
-
-    const isObject = typeof b === 'object' && b !== null;
-    const originalText = isObject ? (b.original || '') : '';
-    const improvedText = isObject ? (b.improved || '') : b;
-
-    card.innerHTML = `
-      ${originalText
-        ? `<div class="bullet-original">
-             <span class="b-label label-orig">✧ ORIGINAL</span>
-             <p class="bullet-text-orig">${highlightKw(originalText)}</p>
-           </div>
-           <div class="bullet-arrow">
-             <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
-                  stroke="#22d3ee" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-               <path d="M12 5v14M19 12l-7 7-7-7"/>
-             </svg>
-           </div>`
-        : ''
-      }
-      <div class="bullet-improved">
-        <span class="b-label label-good">✦ IMPROVED</span>
-        <p class="bullet-text-imp">${highlightKw(improvedText)}</p>
+  /* ═══ 1. DOCUMENT VALIDATION ═══ */
+  const docVal = data.document_validation || {};
+  
+  // Role Display
+  const resumeRoles = docVal.resume_roles || [];
+  const jdRoles = docVal.jd_roles || [];
+  const roleMatch = docVal.role_match;
+  
+  const roleDisplayEl = document.getElementById('roleDisplay');
+  if (roleDisplayEl) {
+    roleDisplayEl.innerHTML = `
+      <div class="role-section">
+        <div class="role-row">
+          <span class="role-label">📄 Resume Role:</span>
+          <span class="role-value">${resumeRoles.join(', ').replace(/_/g, ' ') || 'UNKNOWN'}</span>
+        </div>
+        <div class="role-row">
+          <span class="role-label">💼 JD Role:</span>
+          <span class="role-value">${jdRoles.join(', ').replace(/_/g, ' ') || 'UNKNOWN'}</span>
+        </div>
+        <div class="role-match-badge ${roleMatch ? 'match-yes' : 'match-no'}">
+          ${roleMatch ? '✅ Role Matched' : '❌ Role Mismatch'}
+        </div>
       </div>
     `;
-    list.appendChild(card);
-  });
+  }
 
-  /* ═══ REASONING ═══ */
-  document.getElementById('rReasoning').textContent = data.reasoning || '';
+  /* ═══ 2. CANDIDATE INFO ═══ */
+  const candidate = data.candidate || {};
+  const candidateEl = document.getElementById('rCandidate');
+  if (candidateEl) {
+    candidateEl.innerHTML = `
+      <div class="candidate-grid">
+        <div class="candidate-item">
+          <span class="cand-label">👤 Name</span>
+          <span class="cand-value">${candidate.name || 'N/A'}</span>
+        </div>
+        <div class="candidate-item">
+          <span class="cand-label">📧 Email</span>
+          <span class="cand-value">${candidate.email || 'N/A'}</span>
+        </div>
+        <div class="candidate-item">
+          <span class="cand-label">⏱️ Experience</span>
+          <span class="cand-value">${candidate.experience_years || 'N/A'} ${typeof candidate.experience_years === 'number' ? 'years' : ''}</span>
+        </div>
+        <div class="candidate-item">
+          <span class="cand-label">📂 Projects</span>
+          <span class="cand-value">${candidate.projects_count || 0}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  /* ═══ 3. JOB NEEDS ═══ */
+  const jobNeeds = data.job_needs || {};
+  const jobNeedsEl = document.getElementById('rJobNeeds');
+  if (jobNeedsEl) {
+    const requiredSkills = jobNeeds.required_skills || [];
+    const preferredSkills = jobNeeds.preferred_skills || [];
+    
+    jobNeedsEl.innerHTML = `
+      <div class="job-title-display">
+        <span class="job-label">🎯 Job Title:</span>
+        <span class="job-title">${jobNeeds.title || 'UNKNOWN'}</span>
+      </div>
+      <div class="skills-required">
+        <h4 class="skills-heading">Required Skills</h4>
+        <div class="skills-tags">
+          ${requiredSkills.map(s => `<span class="tag tag-required">${s}</span>`).join('')}
+        </div>
+      </div>
+      <div class="skills-preferred">
+        <h4 class="skills-heading">Preferred Skills</h4>
+        <div class="skills-tags">
+          ${preferredSkills.map(s => `<span class="tag tag-preferred">${s}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  /* ═══ 4. SCORES ═══ */
+  const finalScore = Math.round(data.score?.final_score || 0);
+  const semanticScore = Math.round(data.analysis?.semantic_score || 0);
+  const verdict = data.score?.verdict || 'UNCERTAIN';
+
+  setTimeout(() => {
+    animateRing('rFinal', finalScore);
+    animateCounter('vFinal', 0, finalScore, 1600);
+    
+    if (document.getElementById('rSemantic')) {
+      animateRing('rSemantic', semanticScore);
+      animateCounter('vSemantic', 0, semanticScore, 1600);
+    }
+  }, 300);
+
+  // Verdict Badge
+  const verdictEl = document.getElementById('rVerdict');
+  if (verdictEl) {
+    verdictEl.textContent = verdict.replace(/_/g, ' ');
+    verdictEl.className = 'verdict-badge ' + getVerdictClass(verdict);
+  }
+
+  /* ═══ 5. SKILLS ANALYSIS ═══ */
+  const analysis = data.analysis || {};
+  const matched = analysis.matched_skills || [];
+  const missing = analysis.missing_skills || [];
+
+  const missingEl = document.getElementById('rMissing');
+  if (missingEl) {
+    missingEl.innerHTML = missing.length 
+      ? missing.map(s => `<span class="tag tag-missing">${s}</span>`).join('')
+      : '<span class="no-data">No missing skills! 🎉</span>';
+  }
+
+  const matchedEl = document.getElementById('rMatched');
+  if (matchedEl) {
+    matchedEl.innerHTML = matched.slice(0, 14).map(s =>
+      `<span class="tag tag-matched">${s}</span>`).join('')
+      + (matched.length > 14
+        ? `<span class="tag tag-matched" style="opacity:.6">+${matched.length - 14}</span>`
+        : '');
+  }
+
+  /* ═══ 6. REVIEW (Strengths / Weaknesses / Reason) ═══ */
+  const review = data.review || {};
+
+  const strengthsEl = document.getElementById('rStrengths');
+  if (strengthsEl) {
+    strengthsEl.innerHTML = (review.strengths || []).map(s =>
+      `<li class="review-item strength-item">
+        <span class="review-icon">💪</span>
+        <span class="review-text">${s}</span>
+      </li>`
+    ).join('');
+  }
+
+  const weaknessesEl = document.getElementById('rWeaknesses');
+  if (weaknessesEl) {
+    weaknessesEl.innerHTML = (review.weaknesses || []).map(w =>
+      `<li class="review-item weakness-item">
+        <span class="review-icon">⚠️</span>
+        <span class="review-text">${w}</span>
+      </li>`
+    ).join('');
+  }
+
+  const reasonEl = document.getElementById('rReasoning');
+  if (reasonEl) {
+    reasonEl.innerHTML = `
+      <div class="reason-box">
+        <span class="reason-icon">💡</span>
+        <p class="reason-text">${review.reason || 'No reason available'}</p>
+      </div>
+    `;
+  }
+
+  /* ═══ 7. IMPROVEMENTS - LINE BY LINE ═══ */
+  const improvements = data.improvements || {};
+  const lineByLine = improvements.line_by_line || [];
+  const topSuggestions = improvements.top_suggestions || [];
+  const summary = improvements.summary || {};
+
+  // Summary stats
+  const summaryEl = document.getElementById('rImprovementSummary');
+  if (summaryEl) {
+    summaryEl.innerHTML = `
+      <div class="summary-stats">
+        <div class="stat-box">
+          <span class="stat-num">${summary.total_bullets || 0}</span>
+          <span class="stat-label">Total Bullets</span>
+        </div>
+        <div class="stat-box stat-improved">
+          <span class="stat-num">${summary.improved_count || 0}</span>
+          <span class="stat-label">Improved</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // Line-by-line bullets
+  const list = document.getElementById('rBullets');
+  if (list) {
+    list.innerHTML = '';
+
+    lineByLine.slice(0, 10).forEach((b, i) => {
+      const card = document.createElement('div');
+      card.className = 'rbullet-card';
+      card.style.animationDelay = (i * 0.08) + 's';
+
+      const original = b.original || '';
+      const improved = b.improved || '';
+      const changed = b.changed;
+
+      card.innerHTML = `
+        <div class="bullet-status ${changed ? 'is-changed' : 'no-change'}">
+          ${changed ? '✨ IMPROVED' : '✓ NO CHANGE NEEDED'}
+        </div>
+        <div class="bullet-original">
+          <span class="b-label label-orig">✧ ORIGINAL</span>
+          <p class="bullet-text-orig">${highlightKw(original)}</p>
+        </div>
+        ${changed ? `
+          <div class="bullet-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"
+                 stroke="#22d3ee" stroke-width="2" stroke-linecap="round"
+                 stroke-linejoin="round">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+          </div>
+          <div class="bullet-improved">
+            <span class="b-label label-good">✦ IMPROVED</span>
+            <p class="bullet-text-imp">${highlightKw(improved)}</p>
+          </div>
+        ` : ''}
+      `;
+      list.appendChild(card);
+    });
+  }
+
+  /* ═══ 8. TOP SUGGESTIONS ═══ */
+  const topSuggestionsEl = document.getElementById('rTopSuggestions');
+  if (topSuggestionsEl) {
+    topSuggestionsEl.innerHTML = topSuggestions.length
+      ? `<ol class="top-suggestions-list">
+          ${topSuggestions.map(s => `<li class="top-sug-item">${highlightKw(s)}</li>`).join('')}
+        </ol>`
+      : '<p class="no-data">No suggestions available</p>';
+  }
+}
+
+/* ═══ HELPER: Verdict CSS Class ═══ */
+function getVerdictClass(verdict) {
+  const v = verdict.toUpperCase();
+  if (v.includes('STRONG')) return 'verdict-strong';
+  if (v.includes('GOOD')) return 'verdict-good';
+  if (v.includes('WEAK') || v.includes('MODERATE')) return 'verdict-weak';
+  if (v.includes('NO_MATCH') || v.includes('LOW')) return 'verdict-low';
+  return 'verdict-uncertain';
 }
 
 /* ══ RING + COUNTER ANIMATORS ══ */
@@ -511,3 +682,227 @@ const creditsObserver = new IntersectionObserver(
 );
 
 if (creditsCard) creditsObserver.observe(creditsCard);
+
+// ═══════════════════════════════════════
+// CAREER BUDDY CHAT — Backend Connection
+// ═══════════════════════════════════════
+
+const CAREER_BUDDY_API = "http://127.0.0.1:8000";
+
+// ✅ Saari markdown links new tab me khulengi
+// ✅ Naya marked API compatible
+const renderer = new marked.Renderer();
+renderer.link = function(token) {
+  // Naya marked version object deta hai
+  const href = typeof token === 'object' ? token.href : token;
+  const title = typeof token === 'object' ? token.title : arguments[1];
+  const text = typeof token === 'object' ? token.text : arguments[2];
+  return `<a href="${href}" target="_blank" rel="noopener noreferrer" title="${title || ''}">${text}</a>`;
+};
+marked.setOptions({ renderer: renderer });
+
+// Send message function — tera HTML isko call kar raha hai onclick
+async function sendChatMessage() {
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  // Input clear karo
+  input.value = "";
+
+  // User message display karo
+  appendChatMessage("user", message);
+
+  // Suggestions hide karo
+  document.getElementById("chatSuggestions").style.display = "none";
+
+  // Typing indicator dikha
+  const typingId = showTypingIndicator();
+
+  try {
+    const res = await fetch(`${CAREER_BUDDY_API}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: message , use_web_search: true})
+    });
+
+  // Sirf ye line add karo sendChatMessage mein
+    const data = await res.json();
+    console.log("📦 API Response:", data);
+    console.log("google_links:", data.google_links);
+    console.log("youtube_links:", data.youtube_links);
+    console.log("response preview:", data.response?.substring(0, 200));
+
+    // Typing indicator hata
+    removeTypingIndicator(typingId);
+
+    // Bot response dikha
+    appendChatMessage("bot", data);
+
+  } catch (err) {
+    removeTypingIndicator(typingId);
+    appendChatMessage("bot", "❌ Backend se connect nahi ho pa raha. Check karo ki server chal raha hai.");
+  }
+}
+
+
+// Suggestion chip click — tera HTML isko call kar raha hai
+function askSuggestion(btn) {
+  const text = btn.innerText.replace(/^[^\w]+/, "").trim(); // emoji hata
+  document.getElementById("chatInput").value = text;
+  sendChatMessage();
+}
+
+
+// Clear chat — tera clear button isko call karega
+document.getElementById("chatClearBtn").addEventListener("click", async () => {
+  // Backend history clear karo
+  await fetch(`${CAREER_BUDDY_API}/api/chat/clear`, { method: "POST" });
+
+  // UI clear karo — sirf welcome message rakho
+  const chatMessages = document.getElementById("chatMessages");
+  const allMsgs = chatMessages.querySelectorAll(".chat-msg");
+  // Pehla message (welcome) chhod ke baaki hata do
+  allMsgs.forEach((msg, i) => { if (i > 0) msg.remove(); });
+
+  // Suggestions wapas dikha
+  document.getElementById("chatSuggestions").style.display = "flex";
+});
+
+
+// Enter key se bhi bhej sake
+document.getElementById("chatInput").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendChatMessage();
+});
+
+
+// ═══════════════════════════════════════
+// Helper Functions
+// ═══════════════════════════════════════
+
+function appendChatMessage(role, data) {
+  const chatMessages = document.getElementById("chatMessages");
+  const isBot = role === "bot";
+  const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  // Backend se structured data aa raha hai
+  const text = typeof data === "string" ? data : (data?.response ?? "No response received");
+  const usedWebSearch = typeof data === "object" ? (data?.used_web_search ?? false) : false;
+  const ytLinks = typeof data === "object" ? (data?.youtube_links ?? []) : [];
+  const googleLinks = typeof data === "object" ? (data?.google_links ?? []) : [];
+
+  if (!text || text === "undefined" || text === "null") {
+    console.error("❌ Empty response received:", data);
+    return;
+  }
+  // Markdown parse
+  const displayText = isBot ? marked.parse(text) : text;
+
+  // Web Search Badge
+  const webBadge = usedWebSearch ? `
+    <div class="chat-badge web-search-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      Live Web Search
+    </div>
+  ` : "";
+
+  // ✅ Google Links Section
+  const googleSection = googleLinks.length > 0 ? `
+    <div class="google-links-section">
+      <div class="google-title">🔍 Google Search Links</div>
+      ${googleLinks
+        .filter(link => link && link !== "undefined" && link.startsWith("http"))
+        .map(link => {
+          // URL se readable title nikalo
+          const query = decodeURIComponent(link.split("?q=")[1] || link);
+          return `
+            <a href="${link}" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="google-link-card">
+              🔍 ${query}
+            </a>
+          `;
+        }).join("")}
+    </div>
+  ` : "";
+
+  // YouTube Links Section
+    // ✅ YouTube links — only valid URLs
+  const ytSection = ytLinks.length > 0 ? `
+    <div class="yt-links-section">
+      <div class="yt-title">📺 YouTube Resources</div>
+      ${ytLinks
+        .filter(link => link && link !== "undefined" && link.startsWith("http"))
+        // ✅ Naya - readable title
+      .map(link => {
+        const query = decodeURIComponent(link.split("search_query=")[1] || link);
+        return `<a href="${link}" target="_blank" rel="noopener noreferrer" class="yt-link-card">▶ ${query}</a>`;
+      }).join("")}
+      </div>
+      ` : "";
+      
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `chat-msg ${isBot ? "bot-msg" : "user-msg"}`;
+
+  msgDiv.innerHTML = isBot ? `
+    <div class="chat-msg-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5">
+        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+      </svg>
+    </div>
+    <div class="chat-msg-bubble">
+      <div class="chat-msg-name">CareerBuddy</div>
+      ${webBadge}
+      <div class="chat-msg-text formatted-response">${displayText}</div>
+      ${googleSection}
+      ${ytSection}
+      <div class="chat-msg-time">${time}</div>
+    </div>
+  ` : `
+    <div class="chat-msg-bubble user-bubble">
+      <div class="chat-msg-text">${text}</div>
+      <div class="chat-msg-time">${time}</div>
+    </div>
+  `;
+
+  chatMessages.appendChild(msgDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+
+function showTypingIndicator() {
+  const id = "typing-" + Date.now();
+  const chatMessages = document.getElementById("chatMessages");
+
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "chat-msg bot-msg";
+  typingDiv.id = id;
+  typingDiv.innerHTML = `
+    <div class="chat-msg-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5">
+        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+      </svg>
+    </div>
+    <div class="chat-msg-bubble">
+      <div class="chat-msg-name">CareerBuddy</div>
+      <div class="chat-msg-text typing-dots">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  `;
+
+  chatMessages.appendChild(typingDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  return id;
+}
+
+
+function removeTypingIndicator(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+}
