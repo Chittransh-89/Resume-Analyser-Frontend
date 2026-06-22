@@ -207,7 +207,7 @@ async function classifyDocument() {
   formData.append('file', classifyInput.files[0]);
 
   try {
-    const res = await fetch('http://127.0.0.1:8000/classify/', {
+    const res = await fetch('/classify/', {
       method: 'POST',
       body: formData
     });
@@ -338,7 +338,7 @@ async function analyzeResume() {
   formData.append('jd', jdInput.files[0]);
 
   try {
-    const res = await fetch('http://127.0.0.1:8000/analyze/', {
+    const res = await fetch('/analyze/', {
       method: 'POST',
       body: formData
     });
@@ -687,7 +687,7 @@ if (creditsCard) creditsObserver.observe(creditsCard);
 // CAREER BUDDY CHAT — Backend Connection
 // ═══════════════════════════════════════
 
-const CAREER_BUDDY_API = "http://127.0.0.1:8000";
+const CAREER_BUDDY_API = "";
 
 // ✅ Saari markdown links new tab me khulengi
 // ✅ Naya marked API compatible
