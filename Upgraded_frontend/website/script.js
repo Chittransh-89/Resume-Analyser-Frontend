@@ -197,9 +197,13 @@ function showClassifyState(state) {
 
 async function classifyDocument() {
   if (!classifyInput || !classifyInput.files[0]) {
-    alert('Please upload a PDF file first.');
+    showToast('Please upload a PDF file first.');
     return;
   }
+
+  const btn = document.getElementById('classifyBtn');
+  const prevText = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; }
 
   showClassifyState('loading');
 
@@ -207,23 +211,29 @@ async function classifyDocument() {
   formData.append('file', classifyInput.files[0]);
 
   try {
-    const res = await fetch('https://chittranshhf-resume-analyser-backend.hf.space/classify/', {
+    const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/classify/', {
       method: 'POST',
       body: formData
-    });
+    }, 2);
 
-    if (!res.ok) throw new Error(`Server: ${res.status}`);
+    if (!res.ok) {
+      const txt = await res.text().catch(()=> '');
+      throw new Error(`Server ${res.status}: ${txt.slice(0,200)}`);
+    }
 
     const data = await res.json();
     console.log('CLASSIFY DATA:', data);
 
     showClassifyState('result');
     renderClassification(data);
+    showToast('Classification complete ✓');
 
   } catch (err) {
-    console.error(err);
-    alert('Classification failed. Make sure backend is running.');
+    console.error('Classify failed:', err);
+    showToast('Classification failed: ' + (err.message.includes('Failed to fetch') ? 'Backend is waking up (HF Space cold start) — please retry in 15s' : err.message));
     showClassifyState('idle');
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = prevText; }
   }
 }
 
@@ -329,28 +339,41 @@ jdInput.addEventListener('change', () => {
 /* ══ ANALYZE ══ */
 async function analyzeResume() {
   if (!resumeInput.files[0] || !jdInput.files[0]) {
-    alert('Please upload both Resume and Job Description PDF files.');
+    showToast('Please upload both Resume and Job Description PDF files.');
     return;
   }
+  const btn = document.getElementById('analyzeBtn');
+  const prevHTML = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; if(btn) btn.innerHTML = '⏳ Analyzing...'; }
   showState('loading');
   const formData = new FormData();
   formData.append('resume', resumeInput.files[0]);
   formData.append('jd', jdInput.files[0]);
 
   try {
-    const res = await fetch('https://chittranshhf-resume-analyser-backend.hf.space/analyze/', {
+    const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/analyze/', {
       method: 'POST',
       body: formData
-    });
-    if (!res.ok) throw new Error(`Server: ${res.status}`);
+    }, 2);
+    if (!res.ok) {
+      const txt = await res.text().catch(()=> '');
+      // Detect HF space sleeping HTML
+      if (txt.includes('<!DOCTYPE') || txt.includes('<html')) throw new Error('Backend is waking up (cold start) — retry in 10-20s');
+      throw new Error(`Server ${res.status}: ${txt.slice(0,300)}`);
+    }
     const data = await res.json();
     console.log('API DATA:', data);
     showState('result');
     renderResult(data);
+    showToast('Analysis complete ✓');
   } catch (err) {
-    console.error(err);
-    alert('Backend not reachable. Make sure FastAPI is running on http://127.0.0.1:8000');
+    console.error('Analyze failed:', err);
+    const msg = err.message.includes('Failed to fetch') ? 'Backend unreachable — HF Space may be sleeping, retry in 15s' : err.message;
+    showToast(msg);
+    alert('Analysis failed: ' + msg + '\nBackend: https://chittranshhf-resume-analyser-backend.hf.space');
     showState('idle');
+  } finally {
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = prevHTML; }
   }
 }
 
@@ -684,10 +707,106 @@ const creditsObserver = new IntersectionObserver(
 if (creditsCard) creditsObserver.observe(creditsCard);
 
 // ═══════════════════════════════════════
-// CAREER BUDDY CHAT — Backend Connection
+// BACKEND HEALTH CHECK + FETCH WITH RETRY
 // ═══════════════════════════════════════
 
 const CAREER_BUDDY_API = "https://chittranshhf-resume-analyser-backend.hf.space";
+const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
+let backendHealthy = false;
+let brainLoaded = false;
+
+// HF Spaces need retry for cold start — up to 40s
+async function fetchWithRetry(url, options={}, retries=2, delayMs=6000){
+  for(let attempt=0; attempt<=retries; attempt++){
+    try{
+      const controller = new AbortController();
+      const timeout = setTimeout(()=> controller.abort(), 35000);
+      const res = await fetch(url, { ...options, signal: controller.signal, mode: 'cors' });
+      clearTimeout(timeout);
+      // If HF returns 503 HTML (space sleeping), treat as retryable
+      if(res.status===503 || res.status===502){
+        const txt = await res.clone().text().catch(()=> '');
+        if(txt.includes('Space') || txt.includes('html')) throw new Error('HF Space waking up');
+      }
+      return res;
+    }catch(err){
+      const isLast = attempt===retries;
+      const retryable = err.name==='AbortError' || err.message.includes('Failed to fetch') || err.message.includes('waking');
+      if(!isLast && retryable){
+        console.warn(`Fetch attempt ${attempt+1} failed, retrying in ${delayMs}ms...`, err.message);
+        updateHealthUI('warming', `Waking up... retry ${attempt+1}/${retries}`);
+        await new Promise(r=> setTimeout(r, delayMs));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
+
+function updateHealthUI(state, customMsg){
+  const navDot = document.getElementById('navStatusDot');
+  const navText = document.getElementById('navStatusText');
+  const chatDot = document.getElementById('chatStatusDot');
+  const chatText = document.getElementById('chatStatusText');
+  const footDot = document.getElementById('footerStatusDot');
+  const footText = document.getElementById('footerStatusText');
+
+  const cfg = {
+    online:   { color:'#22c55e', bg:'rgba(34,197,94,0.15)', border:'rgba(34,197,94,0.3)', msg:'Online — Ready' },
+    warming:  { color:'#f59e0b', bg:'rgba(245,158,11,0.15)', border:'rgba(245,158,11,0.3)', msg:'Warming up models...' },
+    offline:  { color:'#ef4444', bg:'rgba(239,68,68,0.15)', border:'rgba(239,68,68,0.3)', msg:'Offline — retrying...' },
+    checking: { color:'#94a3b8', bg:'rgba(148,163,184,0.1)', border:'rgba(148,163,184,0.2)', msg:'Checking...' }
+  };
+  const c = cfg[state] || cfg.checking;
+  const msg = customMsg || c.msg;
+
+  [navDot, chatDot, footDot].forEach(dot=>{
+    if(!dot) return;
+    dot.style.background = c.color;
+    dot.style.boxShadow = `0 0 8px ${c.color}`;
+    dot.style.animation = state==='offline' ? 'none' : 'statusBlink 2s ease-in-out infinite';
+  });
+  [navText, chatText, footText].forEach(el=>{
+    if(!el) return;
+    el.textContent = msg;
+    el.style.color = c.color;
+  });
+  const navStatus = document.getElementById('navBackendStatus');
+  const chatHeaderStatus = document.getElementById('chatHeaderStatus');
+  const footerStatus = document.getElementById('footerStatus');
+  [navStatus, chatHeaderStatus, footerStatus].forEach(box=>{
+    if(!box) return;
+    box.style.background = c.bg;
+    box.style.borderColor = c.border;
+  });
+}
+
+async function checkBackendHealth(){
+  updateHealthUI('checking');
+  try{
+    const res = await fetch(HEALTH_URL, { mode:'cors', cache:'no-store' });
+    if(!res.ok) throw new Error(`Health ${res.status}`);
+    const data = await res.json();
+    console.log('🏥 Health:', data);
+    backendHealthy = data.status === 'online';
+    brainLoaded = data.brain_loaded === true;
+    if(!backendHealthy) updateHealthUI('offline', 'Backend offline');
+    else if(!brainLoaded) updateHealthUI('warming', 'Online — models warming');
+    else updateHealthUI('online', 'Online — Ready');
+    return backendHealthy;
+  }catch(err){
+    console.warn('Health check failed:', err.message);
+    backendHealthy = false;
+    updateHealthUI('offline', 'Offline — HF Space sleeping?');
+    return false;
+  }
+}
+
+// Poll on load + every 30s
+window.addEventListener('DOMContentLoaded', ()=>{
+  checkBackendHealth();
+  setInterval(checkBackendHealth, 30000);
+});
 
 // ✅ Saari markdown links new tab me khulengi
 // ✅ Naya marked API compatible
@@ -704,29 +823,36 @@ marked.setOptions({ renderer: renderer });
 // Send message function — tera HTML isko call kar raha hai onclick
 async function sendChatMessage() {
   const input = document.getElementById("chatInput");
+  const sendBtn = document.getElementById("chatSendBtn");
   const message = input.value.trim();
   if (!message) return;
 
   // Input clear karo
   input.value = "";
+  if(sendBtn) sendBtn.disabled = true;
 
   // User message display karo
   appendChatMessage("user", message);
 
   // Suggestions hide karo
-  document.getElementById("chatSuggestions").style.display = "none";
+  const sugg = document.getElementById("chatSuggestions");
+  if(sugg) sugg.style.display = "none";
 
   // Typing indicator dikha
   const typingId = showTypingIndicator();
 
   try {
-    const res = await fetch(`${CAREER_BUDDY_API}/api/chat`, {
+    const res = await fetchWithRetry(`${CAREER_BUDDY_API}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: message , use_web_search: true})
-    });
+    }, 2, 6000);
 
-  // Sirf ye line add karo sendChatMessage mein
+    if(!res.ok){
+      const txt = await res.text().catch(()=> '');
+      throw new Error(`Server ${res.status}: ${txt.slice(0,200)}`);
+    }
+
     const data = await res.json();
     console.log("📦 API Response:", data);
     console.log("google_links:", data.google_links);
@@ -736,12 +862,31 @@ async function sendChatMessage() {
     // Typing indicator hata
     removeTypingIndicator(typingId);
 
-    // Bot response dikha
-    appendChatMessage("bot", data);
+    // If backend returns connection error but HTTP 200, surface it
+    if(typeof data.response === 'string' && data.response.includes('Connection error')){
+      appendChatMessage("bot", "⚠️ Backend is online but AI brain is warming up. Please retry in 10s. If persists, check HF Space secrets (GROQ_API_KEY).");
+      updateHealthUI('warming', 'AI brain warming...');
+      showToast('AI brain warming — retry in 10s');
+    } else {
+      // Bot response dikha
+      appendChatMessage("bot", data);
+      updateHealthUI('online', 'Online — Ready');
+    }
 
   } catch (err) {
+    console.error('Chat failed:', err);
     removeTypingIndicator(typingId);
-    appendChatMessage("bot", "❌ Backend se connect nahi ho pa raha. Check karo ki server chal raha hai.");
+    const isNetwork = err.message.includes('Failed to fetch') || err.name==='AbortError';
+    const msg = isNetwork
+      ? "❌ Backend se connect nahi ho pa raha. HF Space sleep kar raha ho sakta hai — 20s me auto-retry hoga. Backend: https://chittranshhf-resume-analyser-backend.hf.space"
+      : `❌ Error: ${err.message}`;
+    appendChatMessage("bot", msg);
+    updateHealthUI('offline', 'Offline — retrying');
+    showToast(isNetwork ? 'Backend waking up — retrying...' : err.message);
+  } finally {
+    if(sendBtn) sendBtn.disabled = false;
+    // re-check health in background
+    checkBackendHealth();
   }
 }
 
@@ -755,23 +900,26 @@ function askSuggestion(btn) {
 
 
 // Clear chat — tera clear button isko call karega
-document.getElementById("chatClearBtn").addEventListener("click", async () => {
-  // Backend history clear karo
-  await fetch(`${CAREER_BUDDY_API}/api/chat/clear`, { method: "POST" });
-
+const chatClearBtn = document.getElementById("chatClearBtn");
+if (chatClearBtn) chatClearBtn.addEventListener("click", async () => {
+  try {
+    await fetchWithRetry(`${CAREER_BUDDY_API}/api/chat/clear`, { method: "POST" }, 1, 2000);
+  } catch(e){ console.warn('Clear chat backend failed:', e.message); }
   // UI clear karo — sirf welcome message rakho
   const chatMessages = document.getElementById("chatMessages");
-  const allMsgs = chatMessages.querySelectorAll(".chat-msg");
-  // Pehla message (welcome) chhod ke baaki hata do
-  allMsgs.forEach((msg, i) => { if (i > 0) msg.remove(); });
-
-  // Suggestions wapas dikha
-  document.getElementById("chatSuggestions").style.display = "flex";
+  if(chatMessages){
+    const allMsgs = chatMessages.querySelectorAll(".chat-msg");
+    allMsgs.forEach((msg, i) => { if (i > 0) msg.remove(); });
+  }
+  const sugg = document.getElementById("chatSuggestions");
+  if(sugg) sugg.style.display = "flex";
+  showToast('Chat cleared');
 });
 
 
 // Enter key se bhi bhej sake
-document.getElementById("chatInput").addEventListener("keydown", (e) => {
+const chatInputEl = document.getElementById("chatInput");
+if (chatInputEl) chatInputEl.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendChatMessage();
 });
 

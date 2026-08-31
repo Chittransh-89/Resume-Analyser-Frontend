@@ -56,6 +56,11 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   .nav-links.open{display:flex;}
   .nav-link{padding:.75rem 1.5rem;}
 }
+/* ══ NAV BACKEND STATUS BADGE ══ */
+.nav-status{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;background:rgba(148,163,184,0.1);border:1px solid rgba(148,163,184,0.2);font-size:0.72rem;font-weight:600;letter-spacing:0.04em;color:#94a3b8;white-space:nowrap;transition:all 0.3s ease;}
+.nav-status-dot{width:7px;height:7px;border-radius:50%;background:#94a3b8;box-shadow:0 0 6px currentColor;animation:statusBlink 2s ease-in-out infinite;flex-shrink:0;}
+@media(max-width:900px){ .nav-status{font-size:0.65rem;padding:5px 10px;} }
+@media(max-width:640px){ .nav-status{position:absolute;top:70px;right:12px;z-index:99;} }
 
 /* ══ SECTIONS ══ */
 .section{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:7rem 1.5rem 5rem;}

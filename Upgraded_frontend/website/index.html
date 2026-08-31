@@ -33,6 +33,10 @@
         <li><a href="#implementation" class="nav-link">Implementation</a></li>
         <li><a href="#credits" class="nav-link">Credits</a></li>
       </ul>
+      <div class="nav-status" id="navBackendStatus" title="Backend health">
+        <span class="nav-status-dot" id="navStatusDot"></span>
+        <span id="navStatusText">Checking...</span>
+      </div>
     </div>
   </nav>
 
@@ -766,9 +770,9 @@
           </div>
           <div class="chat-header-info">
             <span class="chat-header-name">CareerBuddy AI</span>
-            <span class="chat-header-status">
-              <span class="chat-status-dot"></span>
-              Online — Ready to help
+            <span class="chat-header-status" id="chatHeaderStatus">
+              <span class="chat-status-dot" id="chatStatusDot"></span>
+              <span id="chatStatusText">Checking...</span>
             </span>
           </div>
         </div>
@@ -1157,9 +1161,9 @@
         </div>
 
         <!-- Status indicator -->
-        <div class="footer-status">
-          <span class="fs-dot"></span>
-          System Online — All Models Loaded
+        <div class="footer-status" id="footerStatus">
+          <span class="fs-dot" id="footerStatusDot"></span>
+          <span id="footerStatusText">Checking backend...</span>
         </div>
       </div>
 
