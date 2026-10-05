@@ -714,7 +714,7 @@ if (creditsCard) creditsObserver.observe(creditsCard);
 // ═══════════════════════════════════════
 
 // const CAREER_BUDDY_API = "https://chittranshhf-resume-analyser-backend.hf.space";
-const CARREER_BUDDY_API = "http://127.0.0.1:8000/";
+const CAREER_BUDDY_API = "http://127.0.0.1:8000/";
 const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
 let backendHealthy = false;
 let brainLoaded = false;
