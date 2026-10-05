@@ -211,7 +211,8 @@ async function classifyDocument() {
   formData.append('file', classifyInput.files[0]);
 
   try {
-    const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/classify/', {
+    // const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/classify/', {
+    const res = await fetchWithRetry('http://127.0.0.1:8000/classify/', {
       method: 'POST',
       body: formData
     }, 2);
@@ -351,7 +352,8 @@ async function analyzeResume() {
   formData.append('jd', jdInput.files[0]);
 
   try {
-    const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/analyze/', {
+    // const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/analyze/', {
+    const res = await fetchWithRetry('http://127.0.0.1:8000/analyze/' , {
       method: 'POST',
       body: formData
     }, 2);
@@ -370,7 +372,8 @@ async function analyzeResume() {
     console.error('Analyze failed:', err);
     const msg = err.message.includes('Failed to fetch') ? 'Backend unreachable — HF Space may be sleeping, retry in 15s' : err.message;
     showToast(msg);
-    alert('Analysis failed: ' + msg + '\nBackend: https://chittranshhf-resume-analyser-backend.hf.space');
+    // alert('Analysis failed: ' + msg + '\nBackend: https://chittranshhf-resume-analyser-backend.hf.space');
+    alert('Analysis failed: ' + msg + '\nBackend: http://127.0.0.1:8000/');
     showState('idle');
   } finally {
     if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = prevHTML; }
@@ -710,7 +713,8 @@ if (creditsCard) creditsObserver.observe(creditsCard);
 // BACKEND HEALTH CHECK + FETCH WITH RETRY
 // ═══════════════════════════════════════
 
-const CAREER_BUDDY_API = "https://chittranshhf-resume-analyser-backend.hf.space";
+// const CAREER_BUDDY_API = "https://chittranshhf-resume-analyser-backend.hf.space";
+const CARREER_BUDDY_API = "http://127.0.0.1:8000/";
 const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
 let backendHealthy = false;
 let brainLoaded = false;
@@ -878,7 +882,8 @@ async function sendChatMessage() {
     removeTypingIndicator(typingId);
     const isNetwork = err.message.includes('Failed to fetch') || err.name==='AbortError';
     const msg = isNetwork
-      ? "❌ Backend se connect nahi ho pa raha. HF Space sleep kar raha ho sakta hai — 20s me auto-retry hoga. Backend: https://chittranshhf-resume-analyser-backend.hf.space"
+      // ? "❌ Backend se connect nahi ho pa raha. HF Space sleep kar raha ho sakta hai — 20s me auto-retry hoga. Backend: https://chittranshhf-resume-analyser-backend.hf.space"
+      ? "Backend se connect nahi ho para . Backend:http://127.0.0.1:8000/"
       : `❌ Error: ${err.message}`;
     appendChatMessage("bot", msg);
     updateHealthUI('offline', 'Offline — retrying');
