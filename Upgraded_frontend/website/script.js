@@ -405,6 +405,15 @@ function highlightKw(text) {
     .replace(rx, m => `<span class="keyword">${m}</span>`);
 }
 
+/* Experience display: under 1 year -> "less than 1 year",
+   otherwise whole years ("1 year", "2 years", ...). */
+function formatExperience(years) {
+  if (typeof years !== 'number' || isNaN(years)) return 'N/A';
+  if (years < 1) return 'less than 1 year';
+  const whole = Math.floor(years);
+  return whole + (whole === 1 ? ' year' : ' years');
+}
+
 /* ══ RENDER RESULT (UPGRADED FOR NEW API) ══ */
 function renderResult(data) {
 
@@ -451,7 +460,7 @@ function renderResult(data) {
         </div>
         <div class="candidate-item">
           <span class="cand-label">⏱️ Experience</span>
-          <span class="cand-value">${candidate.experience_years ?? 'N/A'} ${typeof candidate.experience_years === 'number' ? 'years' : ''}</span>
+          <span class="cand-value">${formatExperience(candidate.experience_years)}</span>
         </div>
         <div class="candidate-item">
           <span class="cand-label">📂 Projects</span>
