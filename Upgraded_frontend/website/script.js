@@ -451,7 +451,7 @@ function renderResult(data) {
         </div>
         <div class="candidate-item">
           <span class="cand-label">⏱️ Experience</span>
-          <span class="cand-value">${candidate.experience_years || 'N/A'} ${typeof candidate.experience_years === 'number' ? 'years' : ''}</span>
+          <span class="cand-value">${candidate.experience_years ?? 'N/A'} ${typeof candidate.experience_years === 'number' ? 'years' : ''}</span>
         </div>
         <div class="candidate-item">
           <span class="cand-label">📂 Projects</span>
