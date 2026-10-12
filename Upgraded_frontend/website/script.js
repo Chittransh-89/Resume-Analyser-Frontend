@@ -714,7 +714,7 @@ if (creditsCard) creditsObserver.observe(creditsCard);
 // ═══════════════════════════════════════
 
 // const CAREER_BUDDY_API = "https://chittranshhf-resume-analyser-backend.hf.space";
-const CAREER_BUDDY_API = "http://127.0.0.1:8000/";
+const CAREER_BUDDY_API = "http://127.0.0.1:8000";
 const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
 let backendHealthy = false;
 let brainLoaded = false;
@@ -825,54 +825,53 @@ renderer.link = function(token) {
 marked.setOptions({ renderer: renderer });
 
 // Send message function — tera HTML isko call kar raha hai onclick
+// Send message function — POSTs message and lets backend routing decide search/RAG
 async function sendChatMessage() {
   const input = document.getElementById("chatInput");
   const sendBtn = document.getElementById("chatSendBtn");
+  if (!input) return;
+
   const message = input.value.trim();
   if (!message) return;
 
-  // Input clear karo
+  // Clear input
   input.value = "";
-  if(sendBtn) sendBtn.disabled = true;
+  if (sendBtn) sendBtn.disabled = true;
 
-  // User message display karo
+  // Render user message
   appendChatMessage("user", message);
 
-  // Suggestions hide karo
+  // Hide suggestions
   const sugg = document.getElementById("chatSuggestions");
-  if(sugg) sugg.style.display = "none";
+  if (sugg) sugg.style.display = "none";
 
-  // Typing indicator dikha
+  // Show typing indicator
   const typingId = showTypingIndicator();
 
   try {
     const res = await fetchWithRetry(`${CAREER_BUDDY_API}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: message , use_web_search: true})
+      body: JSON.stringify({ message: message, use_web_search: false })
     }, 2, 6000);
 
-    if(!res.ok){
-      const txt = await res.text().catch(()=> '');
-      throw new Error(`Server ${res.status}: ${txt.slice(0,200)}`);
+    if (!res.ok) {
+      const txt = await res.text().catch(() => '');
+      throw new Error(`Server ${res.status}: ${txt.slice(0, 200)}`);
     }
 
     const data = await res.json();
     console.log("📦 API Response:", data);
-    console.log("google_links:", data.google_links);
-    console.log("youtube_links:", data.youtube_links);
-    console.log("response preview:", data.response?.substring(0, 200));
 
-    // Typing indicator hata
+    // Remove typing indicator
     removeTypingIndicator(typingId);
 
-    // If backend returns connection error but HTTP 200, surface it
-    if(typeof data.response === 'string' && data.response.includes('Connection error')){
-      appendChatMessage("bot", "⚠️ Backend is online but AI brain is warming up. Please retry in 10s. If persists, check HF Space secrets (GROQ_API_KEY).");
+    // Handle connection error fallback
+    if (typeof data.response === 'string' && data.response.includes('Connection error')) {
+      appendChatMessage("bot", "⚠️ Backend is online but AI brain is warming up. Please retry in 10s.");
       updateHealthUI('warming', 'AI brain warming...');
       showToast('AI brain warming — retry in 10s');
     } else {
-      // Bot response dikha
       appendChatMessage("bot", data);
       updateHealthUI('online', 'Online — Ready');
     }
@@ -880,21 +879,134 @@ async function sendChatMessage() {
   } catch (err) {
     console.error('Chat failed:', err);
     removeTypingIndicator(typingId);
-    const isNetwork = err.message.includes('Failed to fetch') || err.name==='AbortError';
+    const isNetwork = err.message.includes('Failed to fetch') || err.name === 'AbortError';
     const msg = isNetwork
-      // ? "❌ Backend se connect nahi ho pa raha. HF Space sleep kar raha ho sakta hai — 20s me auto-retry hoga. Backend: https://chittranshhf-resume-analyser-backend.hf.space"
       ? "Backend se connect nahi ho para . Backend:http://127.0.0.1:8000/"
       : `❌ Error: ${err.message}`;
     appendChatMessage("bot", msg);
     updateHealthUI('offline', 'Offline — retrying');
     showToast(isNetwork ? 'Backend waking up — retrying...' : err.message);
   } finally {
-    if(sendBtn) sendBtn.disabled = false;
-    // re-check health in background
+    if (sendBtn) sendBtn.disabled = false;
     checkBackendHealth();
   }
 }
 
+// Render message in chat window
+function appendChatMessage(role, data) {
+  const chatMessages = document.getElementById("chatMessages");
+  if (!chatMessages) return;
+
+  const isBot = role === "bot";
+  const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+  let text = "";
+  let usedWebSearch = false;
+  let googleLinks = [];
+  let ytLinks = [];
+
+  if (typeof data === "string") {
+    text = data;
+  } else if (data && typeof data === "object") {
+    text = data.response ?? "";
+    usedWebSearch = Boolean(data.used_web_search);
+    googleLinks = Array.isArray(data.google_links) ? data.google_links : [];
+    ytLinks = Array.isArray(data.youtube_links) ? data.youtube_links : [];
+  }
+
+  if (!text || text === "undefined" || text === "null") {
+    console.error("❌ Empty response received:", data);
+    return;
+  }
+
+  // Parse Markdown for bot responses
+  const displayText = isBot ? marked.parse(text) : text;
+
+  // Web Search Badge (render ONLY when backend used_web_search is true)
+  const webBadge = (isBot && usedWebSearch) ? `
+    <div class="chat-badge web-search-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      Live Web Search
+    </div>
+  ` : "";
+
+  // Google Links Section - MUST render ONLY when data.google_links is a non-empty array
+  const hasGoogleLinks = isBot && Array.isArray(googleLinks) && googleLinks.length > 0;
+  const googleSection = hasGoogleLinks ? `
+    <div class="google-links-section">
+      <div class="google-title">🔍 Google Search Links</div>
+      ${googleLinks
+        .filter(link => typeof link === "string" && link.trim() !== "" && link !== "undefined" && link !== "null" && link.startsWith("http"))
+        .map(link => {
+          let query = link;
+          try {
+            const urlObj = new URL(link);
+            query = urlObj.searchParams.get("q") || urlObj.searchParams.get("query") || link;
+          } catch (e) {
+            if (link.includes("?q=")) query = decodeURIComponent(link.split("?q=")[1] || link);
+          }
+          return `
+            <a href="${link}" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="google-link-card">
+              🔍 ${query}
+            </a>
+          `;
+        }).join("")}
+    </div>
+  ` : "";
+
+  // YouTube Links Section - MUST render ONLY when data.youtube_links is a non-empty array
+  const hasYtLinks = isBot && Array.isArray(ytLinks) && ytLinks.length > 0;
+  const ytSection = hasYtLinks ? `
+    <div class="yt-links-section">
+      <div class="yt-title">📺 YouTube Resources</div>
+      ${ytLinks
+        .filter(link => typeof link === "string" && link.trim() !== "" && link !== "undefined" && link !== "null" && link.startsWith("http"))
+        .map(link => {
+          let query = link;
+          try {
+            const urlObj = new URL(link);
+            query = urlObj.searchParams.get("search_query") || urlObj.searchParams.get("q") || link;
+          } catch (e) {
+            if (link.includes("search_query=")) query = decodeURIComponent(link.split("search_query=")[1] || link);
+          }
+          return `<a href="${link}" target="_blank" rel="noopener noreferrer" class="yt-link-card">▶ ${query}</a>`;
+        }).join("")}
+    </div>
+  ` : "";
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `chat-msg ${isBot ? "bot-msg" : "user-msg"}`;
+
+  msgDiv.innerHTML = isBot ? `
+    <div class="chat-msg-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5">
+        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
+      </svg>
+    </div>
+    <div class="chat-msg-bubble">
+      <div class="chat-msg-name">CareerBuddy</div>
+      ${webBadge}
+      <div class="chat-msg-text formatted-response">${displayText}</div>
+      ${googleSection}
+      ${ytSection}
+      <div class="chat-msg-time">${time}</div>
+    </div>
+  ` : `
+    <div class="chat-msg-bubble user-bubble">
+      <div class="chat-msg-text">${text}</div>
+      <div class="chat-msg-time">${time}</div>
+    </div>
+  `;
+
+  chatMessages.appendChild(msgDiv);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 
 // Suggestion chip click — tera HTML isko call kar raha hai
 function askSuggestion(btn) {
@@ -935,24 +1047,35 @@ if (chatInputEl) chatInputEl.addEventListener("keydown", (e) => {
 
 function appendChatMessage(role, data) {
   const chatMessages = document.getElementById("chatMessages");
+  if (!chatMessages) return;
+
   const isBot = role === "bot";
   const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-  // Backend se structured data aa raha hai
-  const text = typeof data === "string" ? data : (data?.response ?? "No response received");
-  const usedWebSearch = typeof data === "object" ? (data?.used_web_search ?? false) : false;
-  const ytLinks = typeof data === "object" ? (data?.youtube_links ?? []) : [];
-  const googleLinks = typeof data === "object" ? (data?.google_links ?? []) : [];
+  let text = "";
+  let usedWebSearch = false;
+  let googleLinks = [];
+  let ytLinks = [];
+
+  if (typeof data === "string") {
+    text = data;
+  } else if (data && typeof data === "object") {
+    text = data.response ?? "";
+    usedWebSearch = Boolean(data.used_web_search);
+    googleLinks = Array.isArray(data.google_links) ? data.google_links : [];
+    ytLinks = Array.isArray(data.youtube_links) ? data.youtube_links : [];
+  }
 
   if (!text || text === "undefined" || text === "null") {
     console.error("❌ Empty response received:", data);
     return;
   }
-  // Markdown parse
+
+  // Parse Markdown for bot responses
   const displayText = isBot ? marked.parse(text) : text;
 
-  // Web Search Badge
-  const webBadge = usedWebSearch ? `
+  // Web Search Badge (render ONLY when backend used_web_search is true)
+  const webBadge = (isBot && usedWebSearch) ? `
     <div class="chat-badge web-search-badge">
       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -961,15 +1084,21 @@ function appendChatMessage(role, data) {
     </div>
   ` : "";
 
-  // ✅ Google Links Section
-  const googleSection = googleLinks.length > 0 ? `
+  // Google Links Section - MUST render ONLY when data.google_links is a non-empty array
+  const hasGoogleLinks = isBot && Array.isArray(googleLinks) && googleLinks.length > 0;
+  const googleSection = hasGoogleLinks ? `
     <div class="google-links-section">
       <div class="google-title">🔍 Google Search Links</div>
       ${googleLinks
-        .filter(link => link && link !== "undefined" && link.startsWith("http"))
+        .filter(link => typeof link === "string" && link.trim() !== "" && link !== "undefined" && link !== "null" && link.startsWith("http"))
         .map(link => {
-          // URL se readable title nikalo
-          const query = decodeURIComponent(link.split("?q=")[1] || link);
+          let query = link;
+          try {
+            const urlObj = new URL(link);
+            query = urlObj.searchParams.get("q") || urlObj.searchParams.get("query") || link;
+          } catch (e) {
+            if (link.includes("?q=")) query = decodeURIComponent(link.split("?q=")[1] || link);
+          }
           return `
             <a href="${link}" 
                target="_blank" 
@@ -982,21 +1111,26 @@ function appendChatMessage(role, data) {
     </div>
   ` : "";
 
-  // YouTube Links Section
-    // ✅ YouTube links — only valid URLs
-  const ytSection = ytLinks.length > 0 ? `
+  // YouTube Links Section - MUST render ONLY when data.youtube_links is a non-empty array
+  const hasYtLinks = isBot && Array.isArray(ytLinks) && ytLinks.length > 0;
+  const ytSection = hasYtLinks ? `
     <div class="yt-links-section">
       <div class="yt-title">📺 YouTube Resources</div>
       ${ytLinks
-        .filter(link => link && link !== "undefined" && link.startsWith("http"))
-        // ✅ Naya - readable title
-      .map(link => {
-        const query = decodeURIComponent(link.split("search_query=")[1] || link);
-        return `<a href="${link}" target="_blank" rel="noopener noreferrer" class="yt-link-card">▶ ${query}</a>`;
-      }).join("")}
-      </div>
-      ` : "";
-      
+        .filter(link => typeof link === "string" && link.trim() !== "" && link !== "undefined" && link !== "null" && link.startsWith("http"))
+        .map(link => {
+          let query = link;
+          try {
+            const urlObj = new URL(link);
+            query = urlObj.searchParams.get("search_query") || urlObj.searchParams.get("q") || link;
+          } catch (e) {
+            if (link.includes("search_query=")) query = decodeURIComponent(link.split("search_query=")[1] || link);
+          }
+          return `<a href="${link}" target="_blank" rel="noopener noreferrer" class="yt-link-card">▶ ${query}</a>`;
+        }).join("")}
+    </div>
+  ` : "";
+
   const msgDiv = document.createElement("div");
   msgDiv.className = `chat-msg ${isBot ? "bot-msg" : "user-msg"}`;
 
