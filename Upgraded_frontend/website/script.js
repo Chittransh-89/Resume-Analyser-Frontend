@@ -359,7 +359,7 @@ async function analyzeResume() {
     }, 2);
     if (!res.ok) {
       const txt = await res.text().catch(()=> '');
-      // Detect HF space sleeping HTML
+      // Detect Vercel Backend sleeping HTML
       if (txt.includes('<!DOCTYPE') || txt.includes('<html')) throw new Error('Backend is waking up (cold start) — retry in 10-20s');
       throw new Error(`Server ${res.status}: ${txt.slice(0,300)}`);
     }
@@ -370,7 +370,7 @@ async function analyzeResume() {
     showToast('Analysis complete ✓');
   } catch (err) {
     console.error('Analyze failed:', err);
-    const msg = err.message.includes('Failed to fetch') ? 'Backend unreachable — HF Space may be sleeping, retry in 15s' : err.message;
+    const msg = err.message.includes('Failed to fetch') ? 'Backend unreachable — Vercel Backend may be sleeping, retry in 15s' : err.message;
     showToast(msg);
     alert('Analysis failed: ' + msg + '\nBackend: https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app');
     // alert('Analysis failed: ' + msg + '\nBackend: http://127.0.0.1:8000/');
@@ -728,7 +728,7 @@ const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
 let backendHealthy = false;
 let brainLoaded = false;
 
-// HF Spaces need retry for cold start — up to 40s
+// Vercel Backend need retry for cold start — up to 40s
 async function fetchWithRetry(url, options={}, retries=2, delayMs=6000){
   for(let attempt=0; attempt<=retries; attempt++){
     try{
@@ -736,7 +736,7 @@ async function fetchWithRetry(url, options={}, retries=2, delayMs=6000){
       const timeout = setTimeout(()=> controller.abort(), 35000);
       const res = await fetch(url, { ...options, signal: controller.signal, mode: 'cors' });
       clearTimeout(timeout);
-      // If HF returns 503 HTML (space sleeping), treat as retryable
+      // If Vercel Backend returns 503 HTML (space sleeping), treat as retryable
       if(res.status===503 || res.status===502){
         const txt = await res.clone().text().catch(()=> '');
         if(txt.includes('Space') || txt.includes('html')) throw new Error('Vercel Backend waking up');
