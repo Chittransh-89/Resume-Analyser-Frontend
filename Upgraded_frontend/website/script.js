@@ -211,7 +211,7 @@ async function classifyDocument() {
   formData.append('file', classifyInput.files[0]);
 
   try {
-    const res = await fetchWithRetry('https://resume-backend-rho-nine.vercel.app/classify/', {
+    const res = await fetchWithRetry('https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app/classify/', {
     // const res = await fetchWithRetry('http://127.0.0.1:8000/classify/', {
       method: 'POST',
       body: formData
@@ -352,7 +352,7 @@ async function analyzeResume() {
   formData.append('jd', jdInput.files[0]);
 
   try {
-    const res = await fetchWithRetry('https://resume-backend-rho-nine.vercel.app/analyze/', {
+    const res = await fetchWithRetry('https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app/analyze/', {
     // const res = await fetchWithRetry('http://127.0.0.1:8000/analyze/' , {
       method: 'POST',
       body: formData
@@ -372,7 +372,7 @@ async function analyzeResume() {
     console.error('Analyze failed:', err);
     const msg = err.message.includes('Failed to fetch') ? 'Backend unreachable — Vercel Backend may be sleeping, retry in 15s' : err.message;
     showToast(msg);
-    alert('Analysis failed: ' + msg + '\nBackend: https://resume-backend-rho-nine.vercel.app');
+    alert('Analysis failed: ' + msg + '\nBackend: https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app');
     // alert('Analysis failed: ' + msg + '\nBackend: http://127.0.0.1:8000/');
     showState('idle');
   } finally {
@@ -722,7 +722,7 @@ if (creditsCard) creditsObserver.observe(creditsCard);
 // BACKEND HEALTH CHECK + FETCH WITH RETRY
 // ═══════════════════════════════════════
 
-const CAREER_BUDDY_API = "https://resume-backend-rho-nine.vercel.app";
+const CAREER_BUDDY_API = "https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app";
 // const CAREER_BUDDY_API = "http://127.0.0.1:8000";
 const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
 let backendHealthy = false;
@@ -890,7 +890,7 @@ async function sendChatMessage() {
     removeTypingIndicator(typingId);
     const isNetwork = err.message.includes('Failed to fetch') || err.name === 'AbortError';
     const msg = isNetwork
-      ? "Cannot connect to backend. Backend:https://resume-backend-rho-nine.vercel.app"
+      ? "Cannot connect to backend. Backend:https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app"
       : `❌ Error: ${err.message}`;
     appendChatMessage("bot", msg);
     updateHealthUI('offline', 'Offline — retrying');
