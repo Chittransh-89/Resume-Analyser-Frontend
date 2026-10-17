@@ -211,8 +211,8 @@ async function classifyDocument() {
   formData.append('file', classifyInput.files[0]);
 
   try {
-    // const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/classify/', {
-    const res = await fetchWithRetry('http://127.0.0.1:8000/classify/', {
+    const res = await fetchWithRetry('https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app/classify/', {
+    // const res = await fetchWithRetry('http://127.0.0.1:8000/classify/', {
       method: 'POST',
       body: formData
     }, 2);
@@ -231,7 +231,7 @@ async function classifyDocument() {
 
   } catch (err) {
     console.error('Classify failed:', err);
-    showToast('Classification failed: ' + (err.message.includes('Failed to fetch') ? 'Backend is waking up (HF Space cold start) — please retry in 15s' : err.message));
+    showToast('Classification failed: ' + (err.message.includes('Failed to fetch') ? 'Backend is waking up (Vercel Backend cold start) — please retry in 15s' : err.message));
     showClassifyState('idle');
   } finally {
     if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = prevText; }
@@ -352,8 +352,8 @@ async function analyzeResume() {
   formData.append('jd', jdInput.files[0]);
 
   try {
-    // const res = await fetchWithRetry('https://chittranshhf-resume-analyser-backend.hf.space/analyze/', {
-    const res = await fetchWithRetry('http://127.0.0.1:8000/analyze/' , {
+    const res = await fetchWithRetry('https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app/analyze/', {
+    // const res = await fetchWithRetry('http://127.0.0.1:8000/analyze/' , {
       method: 'POST',
       body: formData
     }, 2);
@@ -372,8 +372,8 @@ async function analyzeResume() {
     console.error('Analyze failed:', err);
     const msg = err.message.includes('Failed to fetch') ? 'Backend unreachable — HF Space may be sleeping, retry in 15s' : err.message;
     showToast(msg);
-    // alert('Analysis failed: ' + msg + '\nBackend: https://chittranshhf-resume-analyser-backend.hf.space');
-    alert('Analysis failed: ' + msg + '\nBackend: http://127.0.0.1:8000/');
+    alert('Analysis failed: ' + msg + '\nBackend: https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app');
+    // alert('Analysis failed: ' + msg + '\nBackend: http://127.0.0.1:8000/');
     showState('idle');
   } finally {
     if (btn) { btn.disabled = false; btn.style.opacity = '1'; btn.innerHTML = prevHTML; }
@@ -722,8 +722,8 @@ if (creditsCard) creditsObserver.observe(creditsCard);
 // BACKEND HEALTH CHECK + FETCH WITH RETRY
 // ═══════════════════════════════════════
 
-// const CAREER_BUDDY_API = "https://chittranshhf-resume-analyser-backend.hf.space";
-const CAREER_BUDDY_API = "http://127.0.0.1:8000";
+const CAREER_BUDDY_API = "https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app";
+// const CAREER_BUDDY_API = "http://127.0.0.1:8000";
 const HEALTH_URL = `${CAREER_BUDDY_API}/api/health`;
 let backendHealthy = false;
 let brainLoaded = false;
@@ -739,7 +739,7 @@ async function fetchWithRetry(url, options={}, retries=2, delayMs=6000){
       // If HF returns 503 HTML (space sleeping), treat as retryable
       if(res.status===503 || res.status===502){
         const txt = await res.clone().text().catch(()=> '');
-        if(txt.includes('Space') || txt.includes('html')) throw new Error('HF Space waking up');
+        if(txt.includes('Space') || txt.includes('html')) throw new Error('Vercel Backend waking up');
       }
       return res;
     }catch(err){
@@ -810,7 +810,7 @@ async function checkBackendHealth(){
   }catch(err){
     console.warn('Health check failed:', err.message);
     backendHealthy = false;
-    updateHealthUI('offline', 'Offline — HF Space sleeping?');
+    updateHealthUI('offline', 'Offline — Vercel Backend sleeping?');
     return false;
   }
 }
@@ -890,7 +890,7 @@ async function sendChatMessage() {
     removeTypingIndicator(typingId);
     const isNetwork = err.message.includes('Failed to fetch') || err.name === 'AbortError';
     const msg = isNetwork
-      ? "Backend se connect nahi ho para . Backend:http://127.0.0.1:8000/"
+      ? "Cannot connect to backend. Backend:https://resume-backend-git-mp-chittransh-verma-s-projects.vercel.app"
       : `❌ Error: ${err.message}`;
     appendChatMessage("bot", msg);
     updateHealthUI('offline', 'Offline — retrying');
