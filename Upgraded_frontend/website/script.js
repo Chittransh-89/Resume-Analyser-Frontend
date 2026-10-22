@@ -733,7 +733,7 @@ async function fetchWithRetry(url, options={}, retries=2, delayMs=6000){
   for(let attempt=0; attempt<=retries; attempt++){
     try{
       const controller = new AbortController();
-      const timeout = setTimeout(()=> controller.abort(), 35000);
+      const timeout = setTimeout(()=> controller.abort(), 60000);
       const res = await fetch(url, { ...options, signal: controller.signal, mode: 'cors' });
       clearTimeout(timeout);
       // If Vercel Backend returns 503 HTML (space sleeping), treat as retryable
