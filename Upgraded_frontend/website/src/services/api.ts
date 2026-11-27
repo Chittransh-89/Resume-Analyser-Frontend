@@ -6,7 +6,9 @@ import type {
   HealthResponse,
 } from '../types/api'
 
-const DEFAULT_BASE_URL = 'http://localhost:11434/v1'
+// The app API (FastAPI) listens on 8000. Port 11434 is the LLM provider (Ollama)
+// that the *backend* talks to — the browser must never call it directly.
+const DEFAULT_BASE_URL = 'http://localhost:8000'
 
 const baseURL = (import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, '')
 

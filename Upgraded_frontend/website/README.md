@@ -38,6 +38,16 @@ npm run dev
 
 Open **http://localhost:5173** (Vite prints the exact URL).
 
+In a second terminal, start the backend on **port 8000**:
+
+```bash
+cd <backend-folder>
+.venv/Scripts/python.exe -m uvicorn main:app --reload --port 8000
+```
+
+> Port **11434** is the LLM provider (Ollama) that the backend uses internally. The browser must
+> never be pointed at it — the app API is a different service on port 8000.
+
 ### The backend must be running
 
 The frontend does not fake results. Without a reachable backend, the pages render fine but
@@ -67,10 +77,11 @@ cp .env.example .env
 ```
 
 ```ini
-VITE_API_BASE_URL=http://localhost:11434/v1
+VITE_API_BASE_URL=http://localhost:8000
 ```
 
 - The variable is read once, in `src/services/api.ts`. No URL is hardcoded in any component.
+- Defaults to `http://localhost:8000` if the variable is missing.
 - `.env` is gitignored; `.env.example` is committed.
 - `VITE_*` values are **compiled into the bundle**. Never put a secret or API key in one — the
   browser can read them. Provider keys belong on the backend.

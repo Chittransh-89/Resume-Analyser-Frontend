@@ -40,7 +40,7 @@ const Footer = () => {
               and an AI career advisor — in one workspace.
             </p>
             <div className="mt-5">
-              <BackendStatus />
+              <BackendStatus showContext />
             </div>
           </div>
 

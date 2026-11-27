@@ -1,5 +1,7 @@
 export interface HealthResponse {
   status?: string
+  /** Present only on the real CareerBuddy API — used to reject impostor responses. */
+  name?: string
   brain_loaded?: boolean
   message?: string
 }

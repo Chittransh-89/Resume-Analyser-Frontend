@@ -5,6 +5,7 @@ import PageHeader from '../components/layout/PageHeader'
 import FileDrop from '../components/FileDrop'
 import ReportView from '../components/report/ReportView'
 import { documentService, getErrorMessage } from '../services/api'
+import { useBackendStatus } from '../components/BackendStatus'
 import type { AnalysisResponse } from '../types/api'
 import { AlertTriangle, Check, Lightbulb, Refresh, Sparkle } from '../components/icons'
 
@@ -34,6 +35,7 @@ const AnalyzePage = () => {
   const [generatedAt, setGeneratedAt] = useState<Date | undefined>(undefined)
   const [error, setError] = useState('')
   const [elapsed, setElapsed] = useState(0)
+  const { status: backendStatus } = useBackendStatus()
 
   useEffect(() => {
     if (status !== 'loading') {
@@ -181,6 +183,19 @@ const AnalyzePage = () => {
                   </li>
                 ))}
               </ul>
+              {backendStatus !== 'online' && (
+                <div
+                  className="mt-6 flex items-start gap-3 rounded-lg border border-bad/30 bg-bad/10 p-4"
+                  role="alert"
+                >
+                  <AlertTriangle size={18} className="mt-0.5 shrink-0 text-bad" />
+                  <p className="text-sm leading-relaxed text-ink-soft">
+                    The analysis backend is not reporting ready, so an upload will likely fail.
+                    Start it, then use the status badge in the header to re-check.
+                  </p>
+                </div>
+              )}
+
               <div className="mt-6 flex items-start gap-3 panel-inset p-4">
                 <Lightbulb size={18} className="mt-0.5 shrink-0 text-warn" />
                 <p className="text-sm leading-relaxed text-muted">
