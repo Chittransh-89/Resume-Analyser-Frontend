@@ -17,7 +17,7 @@ whose base URL is configurable through an environment variable.
 | Build tool | **Vite 5** | Sub-second dev server, native ES modules, and route-level code splitting out of the box. The production build is one command with no config beyond the plugin. |
 | Styling | **Tailwind CSS 3** | The design system is a small token set (canvas / surface / line / ink / cyan / violet). Tailwind keeps those tokens as the only source of colour and spacing, so pages cannot drift apart. It also strips unused CSS at build time. |
 | Routing | **React Router 6** | Five distinct workspaces (`/`, `/analyze`, `/classify`, `/advisor`, `/about`) plus a 404. Each route lazy-loads its own chunk. |
-| HTTP | **Axios** | Multipart file uploads, per-request timeouts, and a retry policy that inspects the response status (retry on `408 / 425 / 429 / 5xx` and network failures). One interceptor-free wrapper in `src/services/api.ts` is the only place that knows the base URL. |
+| HTTP | **Axios** | Multipart file uploads, per-request timeouts, and a retry policy that inspects the response status (retry on `408 / 425 / 429 / 5xx` and network failures; chat turns are never retried, so one question can never be appended twice). One interceptor-free wrapper in `src/services/api.ts` is the only place that knows the base URL. |
 | Markdown | **marked** | The chat advisor replies in Markdown. Rendered output is sanitised in `src/pages/AdvisorPage.tsx` before it reaches the DOM (scripts, event handlers and `javascript:` URLs are stripped). |
 
 **Important:** no animation library, no 3D library, no state-management library, and no UI kit were
@@ -61,10 +61,25 @@ The client expects these endpoints on `VITE_API_BASE_URL`:
 | `GET` | `/api/health` | Backend status badge (`status`, `brain_loaded`) |
 | `POST` | `/classify/` | Single document → type, role, confidence (`multipart`, field `file`) |
 | `POST` | `/analyze/` | Resume + job description → full report (`multipart`, fields `resume`, `jd`) |
-| `POST` | `/api/chat` | CareerBuddy reply (`message`, `use_web_search`) |
-| `POST` | `/api/chat/clear` | Clears server-side conversation state |
+| `POST` | `/api/chat` | CareerBuddy reply (`message`, `use_web_search`, optional `session_id`); the response echoes `session_id` |
+| `POST` | `/api/chat/clear` | Forgets one conversation (`session_id` in the JSON body) |
 
 That backend lives outside this folder and is **not** modified by the frontend.
+
+### Conversation sessions
+
+The chat is session-scoped on the backend. The first message of a conversation is sent without a
+`session_id`; the reply carries one, and every following message sends it back so earlier turns are
+included in context. **Clear** posts the current id and then forgets it, so the next message begins a
+new conversation instead of continuing the old one.
+
+The id lives only in a React ref (`src/pages/AdvisorPage.tsx`). It is never written to `localStorage`
+or `sessionStorage`, so a refresh or a second tab starts a fresh conversation. The backend keeps its
+copy in memory and expires it after `CHAT_SESSION_TTL_SECONDS` (30 minutes idle by default); it is
+not shared between serverless instances, so a conversation can be forgotten by a redeploy.
+
+If the backend ever answers `422` for a stored id, the client drops that id and retries the turn once
+without it — bounded recovery, never a retry loop.
 
 ---
 
@@ -83,6 +98,9 @@ VITE_API_BASE_URL=http://localhost:8000
 - The variable is read once, in `src/services/api.ts`. No URL is hardcoded in any component.
 - Defaults to `http://localhost:8000` if the variable is missing.
 - `.env` is gitignored; `.env.example` is committed.
+- The backend must allow this app's origin in its own `CORS_ORIGINS` setting, otherwise the browser
+  blocks every API call. Locally that is `http://localhost:5173`; in production it is the deployed
+  frontend origin.
 - `VITE_*` values are **compiled into the bundle**. Never put a secret or API key in one — the
   browser can read them. Provider keys belong on the backend.
 
@@ -186,7 +204,7 @@ without it, a hard refresh on `/analyze` returns 404 because routing happens cli
 ## Limitations (honest ones)
 
 - There is no account system, no saved history and no database. A refresh clears the current report;
-  chats live in the tab only.
+  chats live in the tab only (the backend keeps a conversation in memory for at most 30 idle minutes).
 - Scanned or image-only PDFs extract poorly — text-based PDFs give the best results.
 - Long analyses can take up to a minute. The loading state shows elapsed time and honest activity
   labels, not a fake percentage, because the backend streams no progress.

@@ -86,6 +86,8 @@ export interface AnalysisResponse {
 export interface ChatRequest {
   message: string
   use_web_search?: boolean
+  /** Opaque conversation handle; omitted on the first turn of a conversation. */
+  session_id?: string
 }
 
 export interface ChatResponse {
@@ -93,6 +95,8 @@ export interface ChatResponse {
   used_web_search?: boolean
   google_links?: string[]
   youtube_links?: string[]
+  /** Conversation handle to send with the next message (additive field). */
+  session_id?: string
   detail?: string
   error?: string
 }

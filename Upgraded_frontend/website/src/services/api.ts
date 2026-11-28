@@ -1,6 +1,7 @@
 import axios, { type AxiosError, type AxiosRequestConfig } from 'axios'
 import type {
   AnalysisResponse,
+  ChatRequest,
   ChatResponse,
   ClassificationResponse,
   HealthResponse,
@@ -166,25 +167,39 @@ class ApiService {
     )
   }
 
-  sendChatMessage(message: string, useWebSearch = false): Promise<ChatResponse> {
+  sendChatMessage(
+    message: string,
+    useWebSearch = false,
+    sessionId?: string,
+  ): Promise<ChatResponse> {
+    const payload: ChatRequest = { message, use_web_search: useWebSearch }
+    // Sent only when a conversation is already open, so the first turn stays
+    // anonymous and lets the backend mint the id.
+    if (sessionId) payload.session_id = sessionId
+
     return this.request<ChatResponse>(
-      {
-        method: 'POST',
-        url: '/api/chat',
-        data: { message, use_web_search: useWebSearch },
-      },
-      { retries: 1, delayMs: 3000, timeoutMs: 90000 },
+      { method: 'POST', url: '/api/chat', data: payload },
+      // Chat turns are never retried: a retried POST would append the same
+      // exchange to the conversation a second time.
+      { retries: 0, timeoutMs: 90000 },
     )
   }
 
-  async clearChat(): Promise<void> {
+  async clearChat(sessionId?: string): Promise<void> {
     try {
       await this.request<void>(
-        { method: 'POST', url: '/api/chat/clear' },
+        {
+          method: 'POST',
+          url: '/api/chat/clear',
+          data: sessionId ? { session_id: sessionId } : {},
+        },
         { retries: 0, timeoutMs: 10000 },
       )
-    } catch {
-      // The local conversation is cleared by the caller even if the backend is offline.
+    } catch (error) {
+      // The transcript is already reset locally, so a failure here only means
+      // the backend kept its copy. Log the reason (status or safe message) and
+      // never the session id itself, which acts as a bearer token.
+      console.warn('clearChat: backend could not clear the conversation:', getErrorMessage(error))
     }
   }
 }
@@ -201,7 +216,7 @@ export const documentService = {
 }
 
 export const chatService = {
-  sendMessage: (message: string, useWebSearch = false) =>
-    apiService.sendChatMessage(message, useWebSearch),
-  clear: () => apiService.clearChat(),
+  sendMessage: (message: string, useWebSearch = false, sessionId?: string) =>
+    apiService.sendChatMessage(message, useWebSearch, sessionId),
+  clear: (sessionId?: string) => apiService.clearChat(sessionId),
 }

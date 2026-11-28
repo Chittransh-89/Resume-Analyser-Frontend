@@ -3,7 +3,8 @@ import { marked } from 'marked'
 import PageShell from '../components/layout/PageShell'
 import PageHeader from '../components/layout/PageHeader'
 import { useBackendStatus } from '../components/BackendStatus'
-import { chatService, getErrorMessage } from '../services/api'
+import { ApiError, chatService, getErrorMessage } from '../services/api'
+import type { ChatResponse } from '../types/api'
 import { Chat, Search, Send, Trash } from '../components/icons'
 
 interface ChatMeta {
@@ -56,6 +57,10 @@ function isHttpUrl(value: string) {
 
 function escapeHtml(value: string) {
   return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+
+function isInvalidSessionError(error: unknown) {
+  return error instanceof ApiError && error.status === 422
 }
 
 function sanitizeHtml(html: string) {
@@ -138,6 +143,10 @@ const AdvisorPage = () => {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef<HTMLDivElement>(null)
+  // Conversation handle for the backend session API. A ref, not state, because
+  // it never affects rendering; and deliberately not persisted anywhere, so a
+  // refresh or a new tab starts a fresh conversation.
+  const sessionIdRef = useRef<string | null>(null)
   const { status } = useBackendStatus()
 
   useEffect(() => {
@@ -166,12 +175,33 @@ const AdvisorPage = () => {
     setInput('')
     setLoading(true)
 
+    const requestTurn = () =>
+      chatService.sendMessage(content, false, sessionIdRef.current ?? undefined)
+
     try {
-      const data = await chatService.sendMessage(content)
+      let data: ChatResponse
+
+      try {
+        data = await requestTurn()
+      } catch (error) {
+        // The backend rejects a malformed session id with 422 before it does any
+        // work. Forgetting the id and retrying exactly once recovers the chat;
+        // the retry only runs when an id was actually sent, so it cannot loop.
+        if (!sessionIdRef.current || !isInvalidSessionError(error)) throw error
+        sessionIdRef.current = null
+        data = await requestTurn()
+      }
+
       const response = typeof data.response === 'string' ? data.response.trim() : ''
 
       if (!response) {
         throw new Error(data.detail || data.error || 'The backend returned an empty response.')
+      }
+
+      // Only a completed turn adopts the returned id: a failed turn must never
+      // replace a session id that is known to work.
+      if (typeof data.session_id === 'string' && data.session_id) {
+        sessionIdRef.current = data.session_id
       }
 
       setMessages((previous) => [
@@ -204,9 +234,13 @@ const AdvisorPage = () => {
   }
 
   const clearChat = () => {
+    const sessionId = sessionIdRef.current
+    // Forget the id first: even if the backend call fails, the next message must
+    // start a new conversation instead of continuing the old one.
+    sessionIdRef.current = null
     setMessages([WELCOME_MESSAGE])
     setInput('')
-    void chatService.clear()
+    void chatService.clear(sessionId ?? undefined)
   }
 
   const statusTone =
